@@ -1,8 +1,9 @@
 <?php
 ob_start();
+
+
 define('API_KEY','1192617124:AAHVjATs1DUsGJvh_JH6TAz-yjNVRajsfc0');
-//-----------------------------------------------------------------------------------------
-//Admembergbot :
+
 function mahdi($method,$datas=[]){
     $url = "https://api.telegram.org/bot".API_KEY."/".$method;
     $ch = curl_init();
@@ -16,14 +17,12 @@ function mahdi($method,$datas=[]){
         return json_decode($res);
     }
 }
-//-----------------------------------------------------------------------------------------
-// @Aqili_botlar :
-// msg
-$Dev = array("669114984"); // Admin IDsi
-$usernamebot = "Add_membersChannelBot";  //Botingiz useri
-$channel = "Ref_tv";    //Kanalingiz useri
-$channelcode = "Ref_tv";  // Tanga kodi tashaladigan kanal useri
-$web = "https://lordmizban.ir/Mrbertbot";  //Bu joyga tegmang! Bot ishlamaydi
+//-------------------------------------//
+$Dev = array("669114984"); //
+$usernamebot = "Add_membersChannelBot";
+$channel = "Telememberchannel";
+$channelcode = "member_coin";
+$web = "https://lordmizban.ir/Mrbertbot";
 $token = API_KEY;
 //-----------------------------------------------------------------------------------------------
 $update = json_decode(file_get_contents('php://input'));
@@ -53,13 +52,12 @@ $forward_from_first_name = $forward_from->first_name;
 $reply = $update->message->reply_to_message->forward_from->id;
 $reply_username = $update->message->reply_to_message->forward_from->username;
 $reply_first = $update->message->reply_to_message->forward_from->first_name;
-// ========================================================================
+// ======================================================================
 $forchannel = json_decode(file_get_contents("https://api.telegram.org/bot".$token."/getChatMember?chat_id=@".$channel."&user_id=".$from_id));
 $tch = $forchannel->result->status;
 $forchannelq = json_decode(file_get_contents("https://api.telegram.org/bot".$token."/getChatMember?chat_id=@".$channel."&user_id=".$fromid));
 $tchq = $forchannelq->result->status;
-//=================================================================================================
-//@Aqili_botlar:
+//================================================================================================//
 function SendMessage($chat_id, $text){
 mahdi('sendMessage',[
 'chat_id'=>$chat_id,
@@ -105,91 +103,99 @@ $user["userlist"][]="$from_id";
 $user = json_encode($user,true);
 file_put_contents("data/user.json",$user);
 mkdir("start");
+mkdir("data");
+mkdir("ref_tv");
     }
-//==================================================================
+//=================================================================
 if(in_array($from_id, $user["blocklist"])) {
 mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Siz bloklangansiz! Botni boshqa ishlatolmaysiz! Admin bilan boglaning",
+	'text'=>"Sen botdan foydalana olmaysan! Blockdasan!",
 'reply_markup'=>json_encode(['KeyboardRemove'=>[
 ],'remove_keyboard'=>true
 ])
     		]);
 }
+if($textmassage=="/static" && $tc == "private"){	
+if(in_array($from_id, $user["userlist"]) == true) {
+$all = count($user["userlist"]);
+$order = count($user["channellist"]);
+mahdi('sendmessage',[
+	'chat_id'=>$chat_id,
+	'text'=>"🤖 Statistika: 
+		
+📌Hamma userlar $all ta
+
+📌Hamma kanallar: $order ta",
+		]);
+		}
+}
 if($textmassage=="/start" && $tc == "private"){	
 if(in_array($from_id, $user["userlist"]) == true) {
 mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Assalomu Alaykum!
-    Siz ushbu bot yordamida kanalingizga 100% Ozbek va aktiv odamlarni qosholasiz!
+	'text'=>"$first_name Botning asosiy menyusi ga xush kelibsiz
 
-    Pastdagi tugmalardan birini bosing:",
+🔻 Quyidagi tugmalardan foydalaning",
    	'reply_markup'=>json_encode([
   	'inline_keyboard'=>[
-    [
-   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin']
+   [
+   ['text'=>"💰Tanga yig`ish",'callback_data'=>'takecoin']
    ],
     [
-   ['text'=>"🎯 Kanal qoshish",'callback_data'=>'takemember'],['text'=>"👤 Profilim",'callback_data'=>'accont']
+   ['text'=>"👤Odam yig`ish",'callback_data'=>'takemember'],['text'=>"🔖 Profilim",'callback_data'=>'accont']
    ],
    [
-   ['text'=>"👥 Referal",'callback_data'=>'member'],['text'=>"💶 Tanga sotib olish",'callback_data'=>'bycoin']
+   ['text'=>"🗣 Referal ssilka",'callback_data'=>'member'],['text'=>"💳 Tanga sotib olish",'callback_data'=>'bycoin']
    ],
       [
-   ['text'=>"💰 Tanga otkazish",'callback_data'=>'sendcoin'],['text'=>"💼 Buyurtmalar",'callback_data'=>'suporder']
+   ['text'=>"↗️ Tangani sovg`a qilish",'callback_data'=>'sendcoin'],['text'=>"📍Buyurtmalar",'callback_data'=>'suporder']
    ],
       [
-   ['text'=>"🤖 Admin",'callback_data'=>'sup'],['text'=>"🎩 Qoidalar",'callback_data'=>'help']
+   ['text'=>"👨‍💻Admin bilan bog'lanish",'callback_data'=>'sup'],['text'=>"🚦Qoidalar",'callback_data'=>'help'],['text'=>"😎Maxsus kod",'callback_data'=>'code']
    ],
-      [
-   ['text'=>"🤑 Bepul tangalar",'callback_data'=>'code']
-   ],
-   ],
+  	],
 	  	'resize_keyboard'=>true,
   	])
   	]);
 $juser["userfild"]["$from_id"]["file"]="none";
 $juser = json_encode($juser,true);
-file_put_contents("data/$from_id.json",$juser);
+file_put_contents("data/$from_id.json",$juser);	
 }
 else
 {
 mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Salom $first_name 😊
-
-📣 Ushbu bot bilan siz kanalingizga bepul Ozbek azo toplashingiz mumkin
-
-💰 Tangani toplashni boshlang va keyin Ozbek azolarini yiging!",
+	'text'=>"Salom $first_name botimizga xush kelibsiz 😊
+Bu bot orqali siz kanalingizga O'zbek Faol  foydalanuvchilarni qõshib olishingiz mumkin🎖!
+Bizda reklama xizmati ham mavjud reklama bermoqchi bo'lsangiz admin bilan bog'laning $
+ Botdan tõliq foydalanish uchun @$channel kanalimizga a`zo bõling ",
    	'reply_markup'=>json_encode([
   	'inline_keyboard'=>[
-    [
-   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin']
+   [
+   ['text'=>"💰Tanga yig`ish",'callback_data'=>'takecoin']
    ],
     [
-   ['text'=>"🎯 Kanal qoshish",'callback_data'=>'takemember'],['text'=>"👤 Profilim",'callback_data'=>'accont']
+   ['text'=>"👤Odam yig`ish",'callback_data'=>'takemember'],['text'=>"🔖 Profilim",'callback_data'=>'accont']
    ],
    [
-   ['text'=>"👥 Referal",'callback_data'=>'member'],['text'=>"💶 Tanga sotib olish",'callback_data'=>'bycoin']
+   ['text'=>"🗣 Referal ssilka",'callback_data'=>'member'],['text'=>"💳 Tanga sotib olish",'callback_data'=>'bycoin']
    ],
       [
-   ['text'=>"💰 Tanga otkazish",'callback_data'=>'sendcoin'],['text'=>"💼 Buyurtmalar",'callback_data'=>'suporder']
+   ['text'=>"↗️ Tangani sovg`a qilish",'callback_data'=>'sendcoin'],['text'=>"📍Buyurtmalar",'callback_data'=>'suporder']
    ],
       [
-   ['text'=>"🤖 Admin",'callback_data'=>'sup'],['text'=>"🎩 Qoidalar",'callback_data'=>'help']
+   ['text'=>"👨‍💻Admin bilan bog'lanish",'callback_data'=>'sup'],['text'=>"🚦Qoidalar",'callback_data'=>'help'],['text'=>"😎Maxsus kod",'callback_data'=>'code']
    ],
-      [
-   ['text'=>"🤑 Bepul tangalar",'callback_data'=>'code']
-   ],
-    ],
+  	],
 	  	'resize_keyboard'=>true,
   	])
   	]);
-$juser = json_decode(file_get_contents("data/$from_id.json"),true);
+$juser = json_decode(file_get_contents("data/$from_id.json"),true);	
 $juser["userfild"]["$from_id"]["invite"]="0";
 $juser["userfild"]["$from_id"]["coin"]="0";
-$juser["userfild"]["$from_id"]["setchannel"]="Siz kanalga azo bolmadingiz!";
-$juser["userfild"]["$from_id"]["setmember"]="Siz kanalga azo bolmadingiz!";
+$juser["userfild"]["$from_id"]["setchannel"]="Mavjud emas";
+$juser["userfild"]["$from_id"]["setmember"]="Mavjud emas";
 $juser = json_encode($juser,true);
 file_put_contents("data/$from_id.json",$juser);
 }
@@ -199,84 +205,76 @@ $start = str_replace("/start ","",$textmassage);
 if(in_array($from_id, $user["userlist"])) {
 mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Salom $first_name 😊
+	'text'=>"$first_name G`irrom qila olmaysiz shu Hol takrorlansa Botdan Haydalasiz!
 
-📣 Ushbu bot bilan siz kanalingizga bepul Ozbek azo toplashingiz mumkin
-
-💰 Tangani toplashni boshlang va keyin Ozbek azolarini yiging!",
+🔻 Quyidagi tugmalardan foydalaning",
 	   	'reply_markup'=>json_encode([
   	'inline_keyboard'=>[
-    [
-   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin']
+   [
+   ['text'=>"💰Tanga yig`ish",'callback_data'=>'takecoin']
    ],
     [
-   ['text'=>"🎯 Kanal qoshish",'callback_data'=>'takemember'],['text'=>"👤 Profilim",'callback_data'=>'accont']
+   ['text'=>"👤Odam yig`ish",'callback_data'=>'takemember'],['text'=>"🔖 Profilim",'callback_data'=>'accont']
    ],
    [
-   ['text'=>"👥 Referal",'callback_data'=>'member'],['text'=>"💶 Tanga sotib olish",'callback_data'=>'bycoin']
+   ['text'=>"🗣 Referal ssilka",'callback_data'=>'member'],['text'=>"💳 Tanga sotib olish",'callback_data'=>'bycoin']
    ],
       [
-   ['text'=>"💰 Tanga otkazish",'callback_data'=>'sendcoin'],['text'=>"💼 Buyurtmalar",'callback_data'=>'suporder']
+   ['text'=>"↗️ Tangani sovg`a qilish",'callback_data'=>'sendcoin'],['text'=>"📍Buyurtmalar",'callback_data'=>'suporder']
    ],
       [
-   ['text'=>"🤖 Admin",'callback_data'=>'sup'],['text'=>"🎩 Qoidalar",'callback_data'=>'help']
+   ['text'=>"👨‍💻Admin bilan bog'lanish",'callback_data'=>'sup'],['text'=>"🚦Qoidalar",'callback_data'=>'help'],['text'=>"😎Maxsus kod",'callback_data'=>'code']
    ],
-      [
-   ['text'=>"🤑 Bepul tangalar",'callback_data'=>'code']
-   ],
-    ],
+  	],
 	  	'resize_keyboard'=>true,
   	])
-  	]);
+  	]);	
 }
-else
+else 
 {
-$juser = json_decode(file_get_contents("data/$from_id.json"),true);
+$juser = json_decode(file_get_contents("data/$from_id.json"),true);	
 $inuser = json_decode(file_get_contents("data/$start.json"),true);
 $member = $inuser["userfild"]["$start"]["invite"];
 $coin = $inuser["userfild"]["$start"]["coin"];
 $memberplus = $member + 1;
-$coinplus = $coin  +1;
+$coinplus = $coin  + 1;
 	mahdi('sendmessage',[
 	'chat_id'=>$start,
-	'text'=>"Siz dostingizni taklif qildingiz!
-📌 Taklif qilingan dostlaringiz soni: $memberplus. Taklif uchun sizga $coinplus  tanga berildi!",
+	'text'=>"Siz botga taklif qildingiz va sizga 1 tanga berildi✔️
+
+ 👤 Jami tõplagan referallaringiz: $memberplus ta
+💰  Jami tõplagan tangalaringiz: $coinplus tanga",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu ",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
  ]);
  mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Salom $first_name 😊
-
-📣 Ushbu bot bilan siz kanalingizga bepul Ozbek azo toplashingiz mumkin
-
-💰 Tangani toplashni boshlang va keyin Ozbek azolarini yiging!",
+	'text'=>"Salom $first_name botimizga xush kelibsiz 😊
+Bu bot orqali siz kanalingiz Uzbek Faol foydalanuvchilar foydalanuvchilar qõshib olishingiz mumkin🎖!
+ Botdan tõliq foydalanish uchun @$channel kanalimizga a`zo bõling ",
    	'reply_markup'=>json_encode([
   	'inline_keyboard'=>[
-    [
-   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin']
+   [
+   ['text'=>"💰Tanga yig`ish",'callback_data'=>'takecoin']
    ],
     [
-   ['text'=>"🎯 Kanal qoshish",'callback_data'=>'takemember'],['text'=>"👤 Profilim",'callback_data'=>'accont']
+   ['text'=>"👥Buyurtma berish",'callback_data'=>'takemember'],['text'=>"🔖 Profilim",'callback_data'=>'accont']
    ],
    [
-   ['text'=>"👥 Referal",'callback_data'=>'member'],['text'=>"💶 Tanga sotib olish",'callback_data'=>'bycoin']
+   ['text'=>"🗣 Referal ssilka",'callback_data'=>'member'],['text'=>"💳 Tanga sotib olish",'callback_data'=>'bycoin']
    ],
       [
-   ['text'=>"💰 Tanga otkazish",'callback_data'=>'sendcoin'],['text'=>"💼 Buyurtmalar",'callback_data'=>'suporder']
+   ['text'=>"↗️ Tangani sovg`a qilish",'callback_data'=>'sendcoin'],['text'=>"📍Buyurtmalar",'callback_data'=>'suporder']
    ],
       [
-   ['text'=>"🤖 Admin",'callback_data'=>'sup'],['text'=>"🎩 Qoidalar",'callback_data'=>'help']
+   ['text'=>"👨‍💻Admin bilan bog'lanish",'callback_data'=>'sup'],['text'=>"🚦Qoidalar",'callback_data'=>'help'],['text'=>"😎Maxsus kod",'callback_data'=>'code']
    ],
-      [
-   ['text'=>"🤑 Bepul tangalar",'callback_data'=>'code']
-   ],
-    ],
+  	],
 	  	'resize_keyboard'=>true,
   	])
   	]);	
@@ -286,8 +284,8 @@ $inuser = json_encode($inuser,true);
 file_put_contents("data/$start.json",$inuser);
 $juser["userfild"]["$from_id"]["invite"]="0";
 $juser["userfild"]["$from_id"]["coin"]="0";
-$juser["userfild"]["$from_id"]["setchannel"]="Siz kanalga azo bolmadingiz!";
-$juser["userfild"]["$from_id"]["setmember"]="Siz kanalga azo bolmadingiz!";
+$juser["userfild"]["$from_id"]["setchannel"]="Kiritilmagan!";
+$juser["userfild"]["$from_id"]["setmember"]="Kiritilmagan!";
 $juser["userfild"]["$from_id"]["inviter"]="$start";
 $juser = json_encode($juser,true);
 file_put_contents("data/$from_id.json",$juser);	
@@ -305,7 +303,7 @@ break;
 if($allchannel[$z] == true){
      mahdi('answercallbackquery', [
               'callback_query_id' =>$membercall,
-            'text' => "💿 Siz kanalni tark etdingiz @$allchannel[$z] va -5 tanga jarima oldingiz",
+            'text' => "📌 Siz @$allchannel[$z] Shu kanalidan chiqib ketdingiz va Sizga 5 tanga jarima solindi! ",
             'show_alert' =>false
          ]);  
 unset($cuser["userfild"]["$fromid"]["channeljoin"][$z]);
@@ -321,30 +319,27 @@ if($data=="panel"){
 mahdi('editmessagetext',[
         'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Menyuga qaytdik.
+               'text'=>"$firstname Botning asosiy menyusiga qaytdingiz!
 
-Kerakli bolimni tanlang:",
+🔻 Quyidagi tugmalardan foydalaning!",
    	'reply_markup'=>json_encode([
   	'inline_keyboard'=>[
-    [
-   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin']
+   [
+   ['text'=>"💰Tanga yig`ish",'callback_data'=>'takecoin']
    ],
     [
-   ['text'=>"🎯 Kanal qoshish",'callback_data'=>'takemember'],['text'=>"👤 Profilim",'callback_data'=>'accont']
+   ['text'=>"👤Odam yig`ish",'callback_data'=>'takemember'],['text'=>"🔖 Profilim",'callback_data'=>'accont']
    ],
    [
-   ['text'=>"👥 Referal",'callback_data'=>'member'],['text'=>"💶 Tanga sotib olish",'callback_data'=>'bycoin']
+   ['text'=>"🗣Referal ssilka",'callback_data'=>'member'],['text'=>"💳 Tanga sotib olish",'callback_data'=>'bycoin']
    ],
       [
-   ['text'=>"💰 Tanga otkazish",'callback_data'=>'sendcoin'],['text'=>"💼 Buyurtmalar",'callback_data'=>'suporder']
+   ['text'=>"↗️Tangani sovg`a qilish",'callback_data'=>'sendcoin'],['text'=>"📍 Buyurtmalar",'callback_data'=>'suporder']
    ],
       [
-   ['text'=>"🤖 Admin",'callback_data'=>'sup'],['text'=>"🎩 Qoidalar",'callback_data'=>'help']
+   ['text'=>"👨‍💻Admin bilan bog'lanish",'callback_data'=>'sup'],['text'=>"🚦Qoidalar",'callback_data'=>'help'],['text'=>"😎Maxsus kod",'callback_data'=>'code']
    ],
-      [
-   ['text'=>"🤑 Bepul tangalar",'callback_data'=>'code']
-   ],
-    ],
+  	],
 	  	'resize_keyboard'=>true,
   	])
   	]);	
@@ -359,30 +354,14 @@ if($rules == false){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"
-STOP!
-
-   Avval qoidalarni yaxshilab oqib chiqing! Keyin esa tanga ishlang!
-
-1- Avval bizning kanalga obuna boling! @Ref_tv
-2- Kanallarga qoshiling tanga yeging!
-3- Kanaldan chiqib ketsangiz 5 tanga shtraf!
-4- Buyurtmachilar uchun:
-Agar shtarafinfiz ko'payib ketsa admin bilan bog'laning!
- Botni kanalda VIP admin qiling!
-
-📌 Elon: BU YERDA REKLAMA JOYLASHINGIZ MUMKUN!
-
-Reklama joylash uchun adminga yozing: @GOLD_STARUZ
-
-Qoidalar tugmasi orqali barcha vazifalarni togri bajaring!",
+               'text'=>"Kanallarga qõshilib 💰Tanga ishlashdan oldin qoidalarni õqib chiqing! Sõng✅ Tanga yigish ni bosib tanga yigishni boshlashingiz mumkin!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				   ['text'=>"💸 Tanga ishlash",'callback_data'=>"takecoin"],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"✅ Tanga yig`ish",'callback_data'=>"takecoin"],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 [
-				   ['text'=>"🎩 Qoidalar",'callback_data'=>'help']
+				   ['text'=>"🚦 Qoidalar",'callback_data'=>'help']
 				   ],
                      ]
                ])
@@ -399,14 +378,25 @@ if($join == false){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"🤖 Birinch bolib bizning kanalga obuna boling!",
+               'text'=>"🎉 Ajoyib imkoniyat 🎉
+
+Bot sizga taqdim qilgan kanallarga qõshilib tanga ishlashingiz mumkin, Kanallarga azo bõlib botdan 💰Tekshirish tugmasi orqali azo bõlganingizni tekshirsangiz azo bõlgan bõlsangiz bot sizga avtomatik 3 tanga beradi!
+
+‼️ Diqqat agar kanalga azo bõlib tangani ham olib kanaldan chiqib ketsangiz sizga 5 tanga jarima solinadi!
+
+ 📣 Va bundan tashqari maxsus  kodni Kanalimizdan bepul olishingiz ham mumkin!
+
+1 ta maxsus kodni takroran ishlatish mumkin emas,
+Kanalni kuzatib borsangiz har kuni kod tashlanadi yana bir imkoniyat bõladi!
+
+E esdan kõtarilibdiku siz avval meni Yaratgan Insonlar kanaliga azo bõlishingiz kerak sõng tanga ishlay olasiz!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				   ['text'=>"Obuna bolish",'url'=>"https://t.me/$channel"],['text'=>"💰 Tekshirish",'callback_data'=>'mainchannel']
+				   ['text'=>"📣 Kanal",'url'=>"https://t.me/$channel"],['text'=>"👤Mening kanalim",'callback_data'=>'mainchannel']
 				   ],
 				   [
-				   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"💰Tekshirish",'callback_data'=>'takecoin'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -435,24 +425,26 @@ $description = $getchat["result"]["description"];
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Kanal nomi : $name
-Kanal userneymi :  @$username
-Kanal IDsi : $id
-Kanal haqida : $description
-💸 Kanalga obuna boling va botga qaytib Tekshirish tugmasini bosing.
-         Kanalga qoshilganga biz 1 tanga beramiz!
-🔺 Kanaldan chiqib ketsangiz 5 tanga ushlab qolinadi
-Agarda kanal 18+ yoki yomon kanal bolsa Yomon kanal tugmasini bosing!",
+               'text'=>"📣Kanal haqida
+ 📍Kanal nomi: $name
+📍 Kanal Useri: @$username
+📌 Kanal ID raqami : $id	
+🔗 Kanal Ma`lumoti : $description
+
+Ushbu kanalga azo bõling! 
+Sõng botga qaytib kelib 💰Tekshirish tugmasini bosing!
+
+Agarda Kanalni 18+ ga asoslangan yomon deb topsangiz 🛑 Yomon kanal tugmasini bosing va u kanal adminga yuboriladi! ",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				   ['text'=>"📣 Obuna bolish",'url'=>"https://t.me/$username"],['text'=>"Tekshirish",'callback_data'=>'truechannel']
+				   ['text'=>"📣 Kanal",'url'=>"https://t.me/$username"],['text'=>"💰 Tõg`ri kanal",'callback_data'=>'truechannel']
 				   ],
 				   [
-				   ['text'=>"➡  Otkazib yuborish",'callback_data'=>'nextchannel'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"➡️ Keyingi kanal",'callback_data'=>'nextchannel'],['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   				   [
-				   ['text'=>"Yomon kanal",'callback_data'=>'badchannel']
+				   ['text'=>"🛑 Yomon kanal",'callback_data'=>'badchannel']
 				   ],
                      ]
                ])
@@ -467,11 +459,11 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Xozircha yangi kanallar yoq! Foydalanuvchilar  buyurtma berganda kanal shu yerda paydo bo'ladi!  Keyinroq tekshirib ko'ring",
+               'text'=>"📍 Boshqa kanal qolmadi! Birozdan qayta urunib kõring!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"🔄 Qayta urunish",'callback_data'=>'takecoin'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -499,24 +491,26 @@ $description = $getchat["result"]["description"];
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Kanal nomi : $name
-Kanal userneymi :  @$username
-Kanal IDsi : $id
-Kanal haqida : $description
-💸 Kanalga obuna boling va botga qaytib Tekshirish tugmasini bosing.
-         Kanalga qoshilganga biz 1 tanga beramiz!
-🔺 Kanaldan chiqib ketsangiz 5 tanga ushlab qolinadi
-Agarda kanal 18+ yoki yomon kanal bolsa Yomon kanal tugmasini bosing!",
+               'text'=>"📣Kanal haqida
+ 📍Kanal nomi: $name
+📍 Kanal Useri: @$username
+📌 Kanal ID raqami : $id	
+🔗 Kanal Ma`lumoti : $description
+
+Ushbu kanalga azo bõling! 
+Sõng botga qaytib kelib 💰Tekshirish tugmasini bosing!
+
+Agarda Kanalni 18+ yoki Teroristlik ga asoslangan yomon deb topsangiz 🛑 Yomon kanal tugmasini bosing va u kanal Adminlar tomonidan kõrib chiqiladi! Agar no õrin  Yomon kanal deb topgan bõlsangiz Sizga 5 tanga jarima solinadi! Agar kanal asosli Yomon kanal bõlsa sizga 5 tanga Sovga qilinadi ",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				   ['text'=>"📣 Obuna bolish",'url'=>"https://t.me/$username"],['text'=>"Tekshirish",'callback_data'=>'truechannel']
+				   ['text'=>"📣 Kanal",'url'=>"https://t.me/$username"],['text'=>"💰 Tekshirish",'callback_data'=>'truechannel']
 				   ],
 				   [
-				   ['text'=>"➡  Otkazib yuborish",'callback_data'=>'nextchannel'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"➡️Boshqa Kanal",'callback_data'=>'nextchannel'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
-				   [
-				   ['text'=>"Yomon kanal",'callback_data'=>'badchannel']
+				   				   				   [
+				   ['text'=>"🛑 Yomon kanal",'callback_data'=>'badchannel']
 				   ],
                      ]
                ])
@@ -531,11 +525,11 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Xozircha yangi kanallar yoq! Keyinroq kelib koring!",
+               'text'=>"📍 Hozircha kanal qolmadi! Birozdan sõng qayta urunib kõring",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
-                    [
-				   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   [
+				   ['text'=>"🔄 Qayta urunish",'callback_data'=>'takecoin'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -551,7 +545,7 @@ $okchannel = $getchannel->result->status;
 if($okchannel != 'member' && $okchannel != 'creator' && $okchannel != 'administrator'){
         mahdi('answercallbackquery', [
             'callback_query_id' =>$membercall,
-            'text' => "Siz kanalga azo bolmadingiz!",
+            'text' => "😡 A`zo bõlmay turib meni lox qilmoqchimisiz? Tanga yõq❌",
             'show_alert' =>true
         ]);
 }
@@ -559,7 +553,7 @@ else
 {
  mahdi('answercallbackquery', [
             'callback_query_id' =>$membercall,
-            'text' => "🎉 Tabriklaymiz! Siz kanalga obuna boldingiz va 1 tanga ishlab oldingiz!",
+            'text' => "🎉 Tabriklaymiz sizga 2 tanga berildi🎉",
             'show_alert' =>false
 				   ]);
 $cuser = json_decode(file_get_contents("data/$fromid.json"),true);
@@ -568,7 +562,7 @@ $arraychannel = $cuser["userfild"]["$fromid"]["arraychannel"];
 $coinchannel = $user["setmemberlist"];
 $channelincoin = $coinchannel[$arraychannel];
 $downchannel = $channelincoin - 1;
-$pluscoin = $coin + 1;
+$pluscoin = $coin + 2;
 $cuser["userfild"]["$fromid"]["channeljoin"][]="$getjoinchannel";
 $cuser["userfild"]["$fromid"]["coin"]="$pluscoin";
 $cuser = json_encode($cuser,true);
@@ -598,24 +592,26 @@ $description = $getchat["result"]["description"];
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Kanal nomi : $name
-Kanal userneymi :  @$username
-Kanal IDsi : $id
-Kanal haqida : $description
-💸 Kanalga obuna boling va botga qaytib Tekshirish tugmasini bosing.
-         Kanalga qoshilganga biz 1 tanga beramiz!
-🔺 Kanaldan chiqib ketsangiz 5 tanga ushlab qolinadi
-Agarda kanal 18+ yoki yomon kanal bolsa Yomon kanal tugmasini bosing!",
+               'text'=>"📣Kanal haqida
+ 📍Kanal nomi: $name
+📍 Kanal Useri: @$username
+📌 Kanal ID raqami : $id	
+🔗 Kanal Ma`lumoti : $description
+
+Ushbu kanalga azo bõling! 
+Sõng botga qaytib kelib 💰Tekshirish tugmasini bosing!
+
+Agarda Kanalni 18+ yoki Teroristlik ga asoslangan yomon deb topsangiz 🛑 Yomon kanal tugmasini bosing va u kanal Adminlar tomonidan kõrib chiqiladi! Agar no õrin  Yomon kanal deb topgan bõlsangiz Sizga 5 tanga jarima solinadi! Agar kanal asosli Yomon kanal bõlsa sizga 5 tanga Sovga qilinadi ",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				    ['text'=>"📣 Obuna bolish",'url'=>"https://t.me/$username"],['text'=>"Tekshirish",'callback_data'=>'truechannel']
+				   ['text'=>"📣 Kanal",'url'=>"https://t.me/$username"],['text'=>"💰 Tekshirish",'callback_data'=>'truechannel']
 				   ],
 				   [
-				   ['text'=>"➡  Otkazib yuborish",'callback_data'=>'nextchannel'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"➡️Boshqa Kanal",'callback_data'=>'nextchannel'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
-				   [
-				   ['text'=>"Yomon kanal",'callback_data'=>'badchannel']
+				   				   				   [
+				   ['text'=>"🛑 Yomon kanal",'callback_data'=>'badchannel']
 				   ],
                      ]
                ])
@@ -631,11 +627,11 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Xozircha kanallar yoq! Keyinroq kelib koring1",
+               'text'=>"📍 Hozircha kanallar tugadi! Birozdan sõng qayta urunib kõring",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
-                    [
-				   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   [
+				   ['text'=>"🔄 Qayta urunish",'callback_data'=>'takecoin'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -669,24 +665,26 @@ $description = $getchat["result"]["description"];
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Kanal nomi : $name
-Kanal userneymi :  @$username
-Kanal IDsi : $id
-Kanal haqida : $description
-💸 Kanalga obuna boling va botga qaytib Tekshirish tugmasini bosing.
-         Kanalga qoshilganga biz 1 tanga beramiz!
-🔺 Kanaldan chiqib ketsangiz 5 tanga ushlab qolinadi
-Agarda kanal 18+ yoki yomon kanal bolsa Yomon kanal tugmasini bosing!",
+               'text'=>"📣Kanal haqida
+ 📍Kanal nomi: $name
+📍 Kanal Useri: @$username
+📌 Kanal ID raqami : $id	
+🔗 Kanal Ma`lumoti : $description
+
+Ushbu kanalga azo bõling! 
+Sõng botga qaytib kelib 💰Tekshirish tugmasini bosing!
+
+Agarda Kanalni 18+ yoki Teroristlik ga asoslangan yomon deb topsangiz 🛑 Yomon kanal tugmasini bosing va u kanal Adminlar tomonidan kõrib chiqiladi! Agar no õrin Yomon kanal deb topgan bõlsangiz Sizga 5 tanga jarima solinadi! Agar kanal asosli Yomon kanal bõlsa sizga 5 tanga Sovga qilinadi !",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				    ['text'=>"📣 Obuna bolish",'url'=>"https://t.me/$username"],['text'=>"Tekshirish",'callback_data'=>'truechannel']
+				   ['text'=>"📣 Kanal",'url'=>"https://t.me/$username"],['text'=>"💰 Tekshirish",'callback_data'=>'truechannel']
 				   ],
 				   [
-				   ['text'=>"➡  Otkazib yuborish",'callback_data'=>'nextchannel'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"➡️Boshqa Kanal",'callback_data'=>'nextchannel'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
-				   [
-				   ['text'=>"Yomon kanal",'callback_data'=>'badchannel']
+				   				   				   [
+				   ['text'=>"🛑 Yomon kanal",'callback_data'=>'badchannel']
 				   ],
                      ]
                ])
@@ -702,11 +700,11 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Yangi kanallar yoq! Keyinroq kelib koring!",
+               'text'=>"📍 Hozircha kanallar tugadi! Birozdan sõng qayta urunib kõring",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
-                    [
-				   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   [
+				   ['text'=>"🔄 Qayta urunish",'callback_data'=>'takecoin'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -718,7 +716,7 @@ mahdi('editmessagetext',[
 elseif($data=="nextchannel" ){
  mahdi('answercallbackquery', [
             'callback_query_id' =>$membercall,
-            'text' => "Otkazib yuborildi...",
+            'text' => "📌 Kanal Keyingi kanalga õzgartirildi...",
             'show_alert' =>false
         ]);
 $arraychannel = $cuser["userfild"]["$fromid"]["arraychannel"];
@@ -741,24 +739,26 @@ $description = $getchat["result"]["description"];
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Kanal nomi : $name
-Kanal userneymi :  @$username
-Kanal IDsi : $id
-Kanal haqida : $description
-💸 Kanalga obuna boling va botga qaytib Tekshirish tugmasini bosing.
-         Kanalga qoshilganga biz 1 tanga beramiz!
-🔺 Kanaldan chiqib ketsangiz 5 tanga ushlab qolinadi
-Agarda kanal 18+ yoki yomon kanal bolsa Yomon kanal tugmasini bosing!",
+               'text'=>"📣Kanal haqida
+ 📍Kanal nomi: $name
+📍 Kanal Useri: @$username
+📌 Kanal ID raqami : $id	
+🔗 Kanal Ma`lumoti : $description
+
+Ushbu kanalga azo bõling! 
+Sõng botga qaytib kelib 💰Tekshirish tugmasini bosing!
+
+Agarda Kanalni 18+ yoki Teroristlik ga asoslangan yomon deb topsangiz 🛑 Yomon kanal tugmasini bosing va u kanal Adminlar tomonidan kõrib chiqiladi! Agar no õrin Yomon kanal deb topgan bõlsangiz Sizga 5 tanga jarima solinadi! Agar kanal asosli Yomon kanal bõlsa sizga 5 tanga Sovga qilinadi ! ",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				    ['text'=>"📣 Obuna bolish",'url'=>"https://t.me/$username"],['text'=>"Tekshirish",'callback_data'=>'truechannel']
+				   ['text'=>"📣 Kanal",'url'=>"https://t.me/$username"],['text'=>"💰 Tekshirish",'callback_data'=>'truechannel']
 				   ],
 				   [
-				   ['text'=>"➡  Otkazib yuborish",'callback_data'=>'nextchannel'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"➡️Boshqa Kanal",'callback_data'=>'nextchannel'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
-				   [
-				   ['text'=>"Yomon kanal",'callback_data'=>'badchannel']
+				   				   				   [
+				   ['text'=>"🛑 Yomon kanal",'callback_data'=>'badchannel']
 				   ],
                      ]
                ])
@@ -773,11 +773,11 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Yangi kanallar yoq! Keyinroq kelib koring!",
+               'text'=>"📍 Hozircha kanallar tugadi! Birozdan sõng qayta urunib kõring",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
-                    [
-				   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   [
+				   ['text'=>"🔄 Qayta urunish",'callback_data'=>'takecoin'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -790,7 +790,7 @@ $okchannel = $getchannel->result->status;
 if($okchannel != 'member' && $okchannel != 'creator' && $okchannel != 'administrator'){
         mahdi('answercallbackquery', [
             'callback_query_id' =>$membercall,
-            'text' => "Вы не подписаны на канал!",
+            'text' => "😡 A`zo bõlmay turib meni lox qilmoqchimisiz? Tanga yõq❌",
             'show_alert' =>true
         ]);
 }
@@ -798,11 +798,11 @@ else
 {
  mahdi('answercallbackquery', [
             'callback_query_id' =>$membercall,
-            'text' => "🎉 Tabriklaymiz sizga 1 tanga berildi!",
+            'text' =>"🎉 Tabriklaymiz sizga 4 tanga berildi🎉",
             'show_alert' =>false
         ]);
 $coin = $cuser["userfild"]["$fromid"]["coin"];
-$pluscoin = $coin + 1;
+$pluscoin = $coin + 4;
 $cuser["userfild"]["$fromid"]["coin"]="$pluscoin";
 $cuser["userfild"]["$fromid"]["channeljoin"][]="$channel";
 $cuser = json_encode($cuser,true);
@@ -827,24 +827,26 @@ $description = $getchat["result"]["description"];
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Kanal nomi : $name
-Kanal userneymi :  @$username
-Kanal IDsi : $id
-Kanal haqida : $description
-💸 Kanalga obuna boling va botga qaytib Tekshirish tugmasini bosing.
-         Kanalga qoshilganga biz 1 tanga beramiz!
-🔺 Kanaldan chiqib ketsangiz 5 tanga ushlab qolinadi
-Agarda kanal 18+ yoki yomon kanal bolsa Yomon kanal tugmasini bosing!",
+               'text'=>"📣Kanal haqida
+ 📍Kanal nomi: $name
+📍 Kanal Useri: @$username
+📌 Kanal ID raqami : $id	
+🔗 Kanal Ma`lumoti : $description
+
+Ushbu kanalga azo bõling! 
+Sõng botga qaytib kelib 💰Tekshirish tugmasini bosing!
+
+Agarda Kanalni 18+ yoki Teroristlik ga asoslangan yomon deb topsangiz 🛑 Yomon kanal tugmasini bosing va u kanal Adminlar tomonidan kõrib chiqiladi! Agar no õrin Yomon kanal deb topgan bõlsangiz Sizga 5 tanga jarima solinadi! Agar kanal asosli Yomon kanal bõlsa sizga 5 tanga Sovga qilinadi ! ",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-				    ['text'=>"📣 Obuna bolish",'url'=>"https://t.me/$username"],['text'=>"Tekshirish",'callback_data'=>'truechannel']
+				   ['text'=>"📣 Kanal",'url'=>"https://t.me/$username"],['text'=>"💰 Tekshirish",'callback_data'=>'truechannel']
 				   ],
 				   [
-				   ['text'=>"➡  Otkazib yuborish",'callback_data'=>'nextchannel'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   ['text'=>"➡️Boshqa Kanal",'callback_data'=>'nextchannel'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
-				   [
-				   ['text'=>"Yomon kanal",'callback_data'=>'badchannel']
+				   				   				   [
+				   ['text'=>"🛑 Yomon kanal",'callback_data'=>'badchannel']
 				   ],
                      ]
                ])
@@ -859,11 +861,11 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Yangi kanallar yoq! Keyinroq kelib koring!",
+               'text'=>"📍 Hozircha kanallar tugadi! Birozdan sõng qayta urunib kõring",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
-                    [
-				   ['text'=>"💸 Tanga ishlash",'callback_data'=>'takecoin'],['text'=>"🔙 Menyu",'callback_data'=>'panel']
+				   [
+				   ['text'=>"🔄 Qayta urunish",'callback_data'=>'takecoin'],['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -875,16 +877,15 @@ elseif($data=="badchannel"){
 $getjoinchannel = $cuser["userfild"]["$fromid"]["getjoin"];
 	 mahdi('answercallbackquery', [
 	            'callback_query_id' =>$membercall,
-            'text' => "Yomon kanal xaqida adminga xabar bering",
+            'text' => "📌 Shikoyatingiz Adminga yuborildi! Admin kõrib chiqadi! Agar rostdanham Yomon kanal bõlsa Adminlar sizga 5 ta beradi! Agar Yomon kanal bõlmasa 5 tanga Jarima olasiz!",
             'show_alert' =>true
         ]);
 	mahdi('sendmessage',[
 	'chat_id'=>$Dev[0],
-	'text'=>"⚠️Yomon kanal  @$getjoinchannel
-
-🔸 ID: $fromid
-Foydalanuvchi: @ $usernames",
-  	]);
+	'text'=>"⚠️Diqqat @$getjoinchannel ushbu kanal 
+	@$usernames tomonidan Yomon kanal deb topildi!🔸Kanalni kõrib chiqing! Agar rostdanham Yomin kanal bõlsa 5 tanga berib quyingda no õrin bõlsa 5 tanga jarima
+ID raqami $from_id🔹",
+  	]);		
 }
 elseif($data=="accont"){
 $invite = $cuser["userfild"]["$fromid"]["invite"];
@@ -894,24 +895,26 @@ $setmember = $cuser["userfild"]["$fromid"]["setmember"];
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Siz haqingizdagi malumotlar:
-
-💰 Tangalar soni: $coin
-Taklif qilingan dostlaringiz soni: $invite
-Sizning ismingiz: $firstname
-Sizning useri: @$usernames
-Sizning id: $fromid",
+               'text'=>"🎫 Siz haqingizdagi ma`lumot:
+			   
+💰 Tangalaring: $coin tanga
+📣Sõngi saqlangan kanalingiz: $setchannel
+👤Oxirgi odamlarning soni: $setmember
+🗣 Referallaringiz : $invite
+📍 Nickingiz: $firstname
+📍 Useringiz: @$usernames
+📍 ID raqamingiz: $fromid",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Obunalar",'callback_data'=>'mechannel'],['text'=>"💳 Mening kanalim",'callback_data'=>'order']
+['text'=>"⭐️ Mening kanalim",'callback_data'=>'mechannel'],['text'=>"💳 Buyurtma",'callback_data'=>'order']
 				   ],
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
-			   ]);
+			   ]);	
 }
 elseif($data=="mechannel"){
 $allchannel = $cuser["userfild"]["$fromid"]["channeljoin"];
@@ -922,15 +925,15 @@ if($result == true){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-	'text'=>"Siz obuna bolgan kanallar:
-
+	'text'=>"📍Sizning kanalingiz:
+	
 $result
 
-Kanaldan chiqib ketsangiz -5 tanga",
+Shu kanal",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -941,11 +944,13 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-	'text'=>"Siz xali kanal qoshmadingiz!",
+	'text'=>"📍Hali hech qanday kanal yõq kanal qõshish uchun tanga to'plash kerak!
+
+Shu bilan bir vaqtda, har bir kanalga qõshilib tanga olishsangiz bo'ladi ",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel'],['text'=>"💰 Tanga ishlash",'callback_data'=>'takecoin']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel'],['text'=>"💰 Tanga yig`ish",'callback_data'=>'takecoin']
 				   ],
 				   ]
             ])           
@@ -955,19 +960,21 @@ mahdi('editmessagetext',[
 elseif($data=="order"){
 $allchannel = $cuser["userfild"]["$fromid"]["listorder"];
 for($z = 0;$z <= count($allchannel)-1;$z++){
-$result = $at.$result."📍 ".$allchannel[$z]." Obunachilar"."\n";
+$result = $at.$result."📍 ".$allchannel[$z]." Tugallanmagan!"."\n";
 }
 if($result == true){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-	'text'=>"Sizning zakazlaringiz:
+	'text'=>"📍 Sizning buyurtmalaringiz :
 
-$result",
+$result
+
+Buyruq ko'rinishi tomosha qilish har bir buyurtma holatini kuzatib borish mumkin📌",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -979,17 +986,18 @@ $coin = $cuser["userfild"]["$fromid"]["coin"];
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-	'text'=>"Siz hali buyurtmalar qilmadingiz!
-    Agar sizda 10tangadan ortiq tangangiz bolsa buyurtma bering!
-    Sizning tangalaringiz : $coin",
+	'text'=>"Hali ro'yxatdan a'zosi jalb qilish uchun hech qanday kanal mavjud emas 📍 
+
+📌 Siz 30 dan ortiq tanga yigib kanalingizga a'zo buyurtma qilishingiz mumkin! 
+💰Tangalar  soni : $coin tanga",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel'],['text'=>"� Buyurtma berish",'callback_data'=>'takemember']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel'],['text'=>"👤Buyurtma berish",'callback_data'=>'takemember']
 				   ],
 				   ]
             ])           
-  	]);
+  	]);		
 }
 }
 elseif($data=="member"){
@@ -997,24 +1005,26 @@ $invite = $cuser["userfild"]["$fromid"]["invite"];
 $coin = $cuser["userfild"]["$fromid"]["coin"];
 		mahdi('sendphoto',[
 	'chat_id'=>$chatid,
-	'photo'=>new CURLFile("other/pic.jpg"),
-	'caption'=>"Dostlaringizni taklif qiling! Xar bir dostingiz uchun 2 tangadan oling!:
-    Sizning referal Havolangiz:
+	'photo'=>"https://t.me/goldstar_net/24",
+	'caption'=>"🎖 @Add_MembersChannelBot
+
+Bu bot orqali kanalingizga Aktiv Faol o'zbek foydalanuvchilar qo'shishingiz mumkin 
+
+Referal ssilkangiz :
 https://t.me/$usernamebot?start=$fromid",
     		]);
 	mahdi('sendmessage',[
 	'chat_id'=>$chatid,
-'text'=>"Dostlaringizni taklif qiling! Xar bir dostingiz uchun 2 tangadan oling!:
-    Sizning referal Havolangiz:
-https://t.me/$usernamebot?start=$fromid
- Tangalar soni: $coin
- Takliflar soni: $invite
+	'text'=>"📍 Yuqoridagi ssilkani Kanallarga Guruhlarga Va Dõstlaringizga yuboring!
+	
+📍 Sizning referal ssilkangizdan kirgan va oldin bu botdan foydalanmagan har bir dõstingiz uchun 2 tangadan oling!
 
- Agar dostingiz tanga sotib olsa siz 20% bonus olasiz!",
+💰Tõplagan tangalaringiz : $coin tanga
+🗣Taklif qilgan dõstlaringiz : $invite ta",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -1025,11 +1035,13 @@ elseif($data=="sendcoin"){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-	'text'=>"Tangalarni dostingizga otkazish uchun dostingiz IDsini menga yuboring!",
+	'text'=>"📍 Siz õz tangangizni yubormoqchi bõlgan dõstingizni Id raqamini yoki biror xabarini menga forward qilib yuboring!
+
+Xisob bõlimida har bir foydalanuvchi tangalari alohida rõyhatga olingan!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -1044,19 +1056,20 @@ if($forward_from == true){
 if($forward_from_id != $from_id){
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Dostingiz topildi;
+        	'text'=>"Qabul qilindi✅
+			
+U haqida malumot:
+📍 Nicki : $forward_from_first_name
+📍 Usernamesi: @$forward_from_username
+📍 ID raqami: $forward_from_id
 
-📌 U xaqida malumot:
-📍 Ismi: $forward_from_first_name
-Useri: @$forward_from_username
- ID: $forward_from_id
-
-🔆 Yuboriladigan tanga sonini menga yuboring!
-💰 Tangalaringiz soni: coin$",
+Endi unga õtkaziladigon tanga sonini yuboring!
+💰 Sizda hozir: $coin tanga bor",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh Menyu
+",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1070,11 +1083,13 @@ else
 {
 	mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Siz tangani ozingizga ozingiz yuborolmaysiz!",
+        	'text'=>"📍 Õzingizga tanga yuborish mumkin emas !
+
+Boshqa bir foydalanuvchiga tanga yuborish uchun uni xabarini forward qilib yuboring  yoki ID  doimiy faoliyat yurituvchi raqamini yuboring",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1094,19 +1109,19 @@ $username = $statjson['result']['user']['username'];
 $id = $statjson['result']['user']['id'];
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Dostingiz topildi;
+        	'text'=>"Qabul qilindi✅
+			
+U haqida malumot:
+📍 Nicki : $name
+📍Usernamesi : @$username
+📍ID raqami : $id
 
-📌 U xaqida malumot:
-📍 Ismi: $forward_from_first_name
-Useri: @$forward_from_username
- ID: $forward_from_id
-
-🔆 Yuboriladigan tanga sonini yozing!
-💰 Tangalaringiz soni: coin$",
+Endi unga õtkaziladigon tanga sonini yuboring!
+💰 Sizda hozir: $coin tanga bor",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1120,11 +1135,13 @@ else
 {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Bunday ID yoq!",
+        	'text'=>"📍 ID raqam tõgri emas
+
+📌 Diqqat bilan etibor berib yuboring!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1135,12 +1152,13 @@ else
 {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Bunday ID telegramda mavjud emas!
-            Iltimos etibor berib yozing!",
+        	'text'=>"📍 ID kiritilmagan
+
+📌 Diqqat bilan tekshirib yuqori aniqlikda kiriting iltimos",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1151,11 +1169,13 @@ else
 {
 	mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Siz tangani ozingizga ozingiz yuborolmaysiz!",
+        	'text'=>"📍 Õzingizga tanga yuborish mumkin emas !
+
+Boshqa bir foydalanuvchiga tanga yuborish uchun uni xabarini forward qilib yuboring  yoki ID  doimiy faoliyat yurituvchi raqamini yuboring",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1173,31 +1193,31 @@ $coinplus = $coin - $textmassage;
 $sendcoinplus = $coinuser + $textmassage;
 	mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Tangalar otkazildi!
+	'text'=>"Tanga õktazish muvaffaqiyat yakunlandi!
 
- Otkazish haqida malumot:
- ID: $userid
- Otkazilgan tangalar soni: $textmassage
- Qolgan tangalar soni: $coinplus",
+📌 Ma'lumotlar :
+🔆 ID raqami: $userid
+Õtkazilgan tanga soni💰: $textmassage tanga
+Sizda qolgan tanga soni💰: $coinplus tanga",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
   	]);	
 		mahdi('sendmessage',[
 	'chat_id'=>$userid,
-	'text'=>"Sizga dostingiz $textmassage tanga yubordi
+	'text'=>"📍Sizga  $textmassage tanga õtkazildi!
 
-Yuboruvchi xaqida malumot:
-ID: $from_id
-Username: @$username",
+📌 Tanga õtkazgan odam :
+🔆 ID raqami: $from_id
+ 👤Õtkazuvchi: @$username",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -1214,13 +1234,13 @@ else
 {
 	mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"📍Sizda otkazish uchun tangalar yetmaydi!
+	'text'=>"📍Õtkazish uchun yetarli tangalar  yõq 
 
-📌 Tangalaringiz soni  : $coin",
+💰Tangangiz $coin tanga",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Назад",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -1230,27 +1250,29 @@ else
 elseif($data=="suporder"){
 $allchannel = $cuser["userfild"]["$fromid"]["listorder"];
 for($z = 0;$z <= count($allchannel)-1;$z++){
-$result = $at.$result."📍 ".$allchannel[$z]." Участники"."\n";
+$result = $at.$result."📍 ".$allchannel[$z]." Yakunlanmagan!"."\n";
 }
 if($result == true){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Obunachilarni olish uchun kanalingiz userini yuboring
+               'text'=>"📍 Iltimos  kerakli kanal, va yuborish uchun 
 
-📌 Quyidagicha yozing:
-Masalan:  @Ref_tv
+Buyurtma holatini📌, olish
+📣Misol : @$channel
 
 ➖➖➖➖
-� Sizning buyurtmalaringiz :$result",
+📍 Sizning buyurtmalar ro'yhati:
+
+$result",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
-			   ]);
+			   ]);	
 $cuser["userfild"]["$fromid"]["file"]="setorder";
 $cuser = json_encode($cuser,true);
 file_put_contents("data/$fromid.json",$cuser);
@@ -1260,13 +1282,13 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"�Siz hali obunachilarga buyurtma bermadingiz!
-               Buyurtma berish narxi:
-               1ta obunachi 2tanga �",
+               'text'=>"Siz hali ham maxsus dosyalanmış bõlishi kerak emas📍 
+
+📌 Birinchi, rekord tartibi",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Mneyu",'callback_data'=>'panel'],['text'=>"👤 Buyurtma",'callback_data'=>'takemember']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel'],['text'=>"👤 Buyurtma berish",'callback_data'=>'takemember']
 				   ],
                      ]
                ])
@@ -1280,18 +1302,18 @@ if(preg_match('/^(@)(.*)/s',$textmassage)){
 if($searchchannel == true){
 	mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Buyurtmangiz haqida
+	'text'=>"🔆 Azo tõplash maqsadida amalga oshirilmoqda 
 
- Malumot:
+Sizning ma'lumot  
 
- Kanalingiz: $textmassage
- Buyurtma qilingan obunachilar soni: $setmember
+📍 ID channel : $textmassage
+A'zolari qolgan soni📍: $setmember
 
- Agarda savollar bolsa adminga yozin biz 48 soat ichida javob yozamiz!",
+📌 Har qanday muammoda 12 soatdan keyin faqat qōllab-quvvatlash bilan boglaning!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -1301,11 +1323,11 @@ else
 {
 	mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"📍 Sizning buyurtmangiz bajarildi! ",
+	'text'=>"📍Buyurtma bajarildi",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -1316,13 +1338,14 @@ else
 {
 		mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Bunday kanal yoq!
-    Quyidagicha yozing:
-Masalan : @$channel",
+	'text'=>"📍Bunday yuborish notog`ri hisoblanadi 
+
+📌 Tõgri tushunishga harakat qiling iltimos 
+📣Misol : @$channel",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"� Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
 				   ]
             ])           
@@ -1331,65 +1354,66 @@ Masalan : @$channel",
 }
 elseif($data=="takemember"){
 $coin = $cuser["userfild"]["$fromid"]["coin"];
-if($coin >= 10){
+if($coin >= 20){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Kanalingiz userini menga yuboring va obunachilarga ega boling!
-➕ Masalan : @$channel",
+               'text'=>"📍Kanal qõshish mumkin! Kanalingiz @ username sini yuboring!
+➕ Namuna @$channel",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
-			   ]);
+			   ]);	
 $cuser["userfild"]["$fromid"]["file"]="setchannel";
 $cuser = json_encode($cuser,true);
-file_put_contents("data/$fromid.json",$cuser);
+file_put_contents("data/$fromid.json",$cuser);	
 }
 else
 {
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Tangalar juda kam!
-               Buyurtma berish uchun eng kamida 10ta tanga bolishi kerak!
-               1ta obunachi 2tanga turadi!
+               'text'=>"📍 Kanal qõshish uchun tanga yetarli emas!
+			   
+ℹ️  Kanal qõshish uchun eng kamida 20 tanga bõlishi kerak! 
 
- Tangalar soni : $coin",
+💰Tangalaringiz : $coin tanga",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel'],['text'=>"💰 Заработать монеты",'callback_data'=>'takecoin']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel'],['text'=>"💰 Tanga yig`ish",'callback_data'=>'takecoin']
 				   ],
                      ]
                ])
-			   ]);
+			   ]);	
 }
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'setchannel') {
 if(preg_match('/^(@)(.*)/s',$textmassage)){
 $coin = $juser["userfild"]["$from_id"]["coin"];
-$max = $coin / 2;
+$max = $coin / 3;
 $maxmember = floor($max);
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Qabul qilindi
+        	'text'=>"Kanal✅
+			
+📣 Kanal : $textmassage
 
-Kanalga obunachilar: $textmassage
 
-Nechta obunachiga ega bo'lmoqchisiz?
-Siz xozir maksimum $maxmember obunachiga buyurtma berolasiz!
-1ta obunachi 2tanga turadi!
-Tangalaringiz soni: $coin
-Quyidagicha yozing:
-➕ Masalan: 10",
+ℹ️ Kanalingizga $maxmember ta odam qõshgani tangangiz yetadi!
+💰Sizdagi tangalar : $coin tanga
+
+👤 1 ta odam narxi = 3💰Tanga
+
+Kerakli odam sonini yuboring✅ ",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1403,13 +1427,14 @@ else
 {
 	mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>":Notogri!
-            Quyidagicha yozing:
-➕ Masalan @$channel",
+        	'text'=>"📍Bunday yuborish notõg`ri hisoblanadi, 
+➕ Misol 
+Telememberchannel emas
+ @$channel Shunday",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1419,28 +1444,30 @@ else
 elseif ($juser["userfild"]["$from_id"]["file"] == 'setmember') {
 $coin = $juser["userfild"]["$from_id"]["coin"];
 $setchannel = $juser["userfild"]["$from_id"]["setchannel"];
-$max = $coin / 2;
+$max = $coin / 3;
 $maxmember = floor($max);
 if($maxmember >= $textmassage){
 $howmember = getChatMembersCount($setchannel,$token);
 $endmember = $howmember + $textmassage;
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Buyurtma haqida malumot:
+        	'text'=>"ℹ️ New : 
 
- Kanal: $setchannel
- Buyurtma qilingan obunachilar soni: $textmassage
- Hozirgi obunachilar soni: $howmember
- Buyurtmadan song boladigan obunachilar soni: $endmember
+📣 Kanal: $setchannel
+👤 Text: $textmassage
+👥 Hozirgi odamlari : $howmember
+📌 Qõshilgandan keyingi odamlar: $endmember 
 
- Barchasi togri bolsa botni kanalingizda VIP admin qiling!",
+Botni adminlikdan olmang! Agar adminlikdan olsangiz bot kanalingizga odam qõshmaydi!
+
+Kanalingiz malumotlari tõgri bòlsa ✅Tõg`ri tugmasini bosing",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Tayyor",'callback_data'=>'trueorder']
+['text'=>"✅ Tõg`ri",'callback_data'=>'trueorder']
 				   ],
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel'],['text'=>"🚦 Qoidalar",'callback_data'=>'help']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel'],['text'=>"🚦 Buyurtmalar",'callback_data'=>'help']
 				   ],
                      ]
                ])
@@ -1454,13 +1481,13 @@ else
 {
 	mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"ERROR 404
- Sizning balansingizdan kelib chiqib xozir siz Maksimum $maxmember obunachi buyurtma berolasiz!
- Masalan: 10",
+        	'text'=>"📍 $maxmember soni yoki undan kõproq yoki kõp azo olishingiz mumkin emas,
+ a'zo sonini bir qator bunday kiriting
+➕ Misol : 10",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1473,7 +1500,7 @@ $admin = getChatstats(@$setchannel,$token);
 if($admin != true){
 	       mahdi('answercallbackquery', [
             'callback_query_id' =>$membercall,
-            'text' => "Botga Vip admin bering!",
+            'text' => "Bot kanalda adminlar rõyxatiga olinmagan! Admin qilib qayta uruning!",
             'show_alert' =>true
         ]);
 }
@@ -1482,16 +1509,15 @@ else
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Sizning buyurtmangiz qabul qilindi!
+               'text'=>"✅Buyurtma muvaffaqiyatli rõyxatdan õtdi
 
-
-📌 Etibor bering: siz botni adminlikdan yoki kanaldan olib tashlasangiz buyurtmangiz bekor qilinadi! Siz esa bloklanasiz!
-
-⚠️ Qoidalar tugmasini bosing!",
+📌 Eslatma Botni kanal adminlari qatoridan olmang!
+Buyurtmangiz uzog'i bilan 3kunda bajariladi albatta hozircha
+⚠️Qoidalar õqib chiqing bu keyinchalik qiyinchilikga duch kelganingizda sizga yordam beradi",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel'],['text'=>"🚦 Qoidalar",'callback_data'=>'help']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel'],['text'=>"🚦Qoidalar",'callback_data'=>'help']
 				   ],
                      ]
                ])
@@ -1499,7 +1525,7 @@ mahdi('editmessagetext',[
 $coin = $cuser["userfild"]["$fromid"]["coin"];
 $setchannel = $cuser["userfild"]["$fromid"]["setchannel"];
 $setmember = $cuser["userfild"]["$fromid"]["setmember"];
-$pluscoin = $setmember * 2;
+$pluscoin = $setmember * 5;
 $coinplus = $coin - $pluscoin;
 $cuser["userfild"]["$fromid"]["coin"]="$coinplus";
 $cuser["userfild"]["$fromid"]["listorder"][]="$setchannel -> $setmember";
@@ -1515,14 +1541,14 @@ elseif($data=="bycoin"){
 		mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Tanga sotib olmoqchi bolsangiz adminga yozing! @GOLD_STARUZ !",
+               'text'=>"👤Odam qõshish uchun tanga yetmayabdimi? 💰Tanga sotib olishingiz mumkin!💰Tanga sotib olish uchun 👨‍💻Admin bilan bog`laning",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Xaqiqiy pul ishlash",'url'=>"t.me/GOLD_STARUZBOT"],['text'=>"Xaqiqiy pul ishlash",'url'=>"t.me/GOLD_STARUZBOT"]
+['text'=>"👨‍💻Admin",'url'=>"t.me/GOLD_STARUZ"],['text'=>"🚫Spamlar",'url'=>"t.me/GOLD_STARUZBOT"]
 				   ],
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1532,25 +1558,30 @@ elseif($data=="help"){
 		mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Qoidalar bolimiga xush kelibsiz!
+               'text'=>"ℹ️ Bot haqida:
+      
+🤖 Bot  @GOLD_STARUZ ga tegishli
 
-📍 Kerakli bolimni tanlang:",
+ Barcha huquqlar himoyalangan! 
+Qandaydir muammoga duch kelsangiz adminga murojaat qiling.
+
+🎉 @$channel  - Kanallarni rivojlantiruvchi loyiha!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Qoidalar",'callback_data'=>'rules'],['text'=>"Tangalar va Obunachilar",'callback_data'=>'coinandmember']
+['text'=>"📍Qonunlar Shartlar",'callback_data'=>'rules'],['text'=>"📍Pul qutisi + Ro`yhatadan o`tish",'callback_data'=>'coinandmember']
 				   ],
 				   				   				   [
-['text'=>"Kop beriladigan savollar!",'callback_data'=>'qu'],['text'=>"Nega admin beramiz",'callback_data'=>'whyadmin']
+['text'=>"📍Umumiy savollar",'callback_data'=>'qu'],['text'=>"📍Administratsiya qilish",'callback_data'=>'whyadmin']
 				   ],
 				   			   				   				   [
-['text'=>"Bot haqida",'callback_data'=>'about'],['text'=>"Botdan foydalanish",'callback_data'=>'howuser']
+['text'=>"📍Bot haqida",'callback_data'=>'about'],['text'=>"📍Ishlatish qo`llanmasi",'callback_data'=>'howuser']
 				   ],
 				   			   				   				   [
-['text'=>"Qanday botni admin qilamiz",'callback_data'=>'howadmin']
+['text'=>"📍Bot boshqaruvchi",'callback_data'=>'howadmin']
 				   ],
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1561,32 +1592,32 @@ elseif($data=="rules"){
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
                'text'=>"ℹ️ Botning buyruq va shartlari:
+      
+1⃣Agar siz robotga noma'qul bir kanalni rõyxatdan õtkazsangiz, sizning buyurtmangiz ham robot tomonidan bloklanadi
 
-1⃣Agar siz robotga nomaqul bir kanalni rõyxatdan õtkazsangiz, sizning buyurtmangiz ham bot tomonidan bloklanadi
-
-2⃣Agar siz bir necha marta xabar yuborib, botga spam yuborsangiz botdan blokirovka qilinasiz
+2⃣Agar siz bir necha marta xabar yuborib, robotga spam yuborsangiz robotdan blokirovka qilinasiz
 
 3⃣ Buyurtmani bajarish uchun  + bolishiga bot javobgar emas.
 
-4⃣ Agar tanga notõgri uzatilgan bolsa, admin hech qanday javobgarlikni oz zimmasiga olmaydi, shuning uchun tanga kochirishda ehtiyot boling.
+4⃣ Agar tanga notõg'ri uzatilgan bo'lsa, qo'llab-quvvatlash hech qanday javobgarlikni o'z zimmasiga olmaydi, shuning uchun tanga ko'chirishda ehtiyot bo'ling.
 
-5⃣ Ulangan tangalar toliq avtomatlashtirilsa, biron bir muammoga duch kelsangiz adminga murojaat qiling",
+5⃣ Ulangan tangalar to'liq avtomatlashtirilsa, biron bir muammoga duch kelsangiz yordamga murojaat qiling",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Qoidalar",'callback_data'=>'rules'],['text'=>"Tangalar va Obunachilar",'callback_data'=>'coinandmember']
+['text'=>"📍Qonunlar Shartlar",'callback_data'=>'rules'],['text'=>"📍Pul qutisi + Ro`yhatadan o`tish",'callback_data'=>'coinandmember']
 				   ],
 				   				   				   [
-['text'=>"Kop beriladigan savollar!",'callback_data'=>'qu'],['text'=>"Nega admin beramiz",'callback_data'=>'whyadmin']
+['text'=>"📍Umumiy savollar",'callback_data'=>'qu'],['text'=>"📍Administratsiya qilish",'callback_data'=>'whyadmin']
 				   ],
 				   			   				   				   [
-['text'=>"Bot haqida",'callback_data'=>'about'],['text'=>"Botdan foydalanish",'callback_data'=>'howuser']
+['text'=>"📍Bot haqida",'callback_data'=>'about'],['text'=>"📍Ishlatish qo`llanmasi",'callback_data'=>'howuser']
 				   ],
 				   			   				   				   [
-['text'=>"Qanday botni admin qilamiz",'callback_data'=>'howadmin']
+['text'=>"📍Bot boshqaruvchi",'callback_data'=>'howadmin']
 				   ],
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1596,27 +1627,27 @@ elseif($data=="coinandmember"){
 		mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"ℹ️ Tanga va Obunachilar:
-
-1⃣ Har bir kanalga obuna bolish orqali tanga oling
-2️⃣ Siz qoshilgan kanaldan chiqib ketsangiz -5 tanga yoqotasiz
-3⃣Har bir azoni kanalizga qoshish uchun 2 ta tanga tolashingiz kerak",
+               'text'=>"ℹ️ ️ Ro'yxatdan:
+      
+1⃣ Har bir kanalga obuna bo'lish orqali tanga oling
+2️⃣ Siz qoshilgan kanaldan chiqib ketsangiz -4 tanga yoqotasiz
+3⃣Har bir a'zoni kanalizga qo'shish uchun 2 ta tanga to'lashingiz kerak",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
- ['text'=>"Qoidalar",'callback_data'=>'rules'],['text'=>"Tangalar va Obunachilar",'callback_data'=>'coinandmember']
+['text'=>"📍Qonunlar Shartlar",'callback_data'=>'rules'],['text'=>"📍Pul qutisi + Ro`yhatadan o`tish",'callback_data'=>'coinandmember']
 				   ],
 				   				   				   [
-['text'=>"Kop beriladigan savollar!",'callback_data'=>'qu'],['text'=>"Nega admin beramiz",'callback_data'=>'whyadmin']
+['text'=>"📍Umumiy savollar",'callback_data'=>'qu'],['text'=>"📍Administratsiya qilish",'callback_data'=>'whyadmin']
 				   ],
 				   			   				   				   [
-['text'=>"Bot haqida",'callback_data'=>'about'],['text'=>"Botdan foydalanish",'callback_data'=>'howuser']
+['text'=>"📍Bot haqida",'callback_data'=>'about'],['text'=>"📍Ishlatish qo`llanmasi",'callback_data'=>'howuser']
 				   ],
 				   			   				   				   [
-['text'=>"Qanday botni admin qilamiz",'callback_data'=>'howadmin']
+['text'=>"📍Bot boshqaruvchi",'callback_data'=>'howadmin']
 				   ],
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1626,69 +1657,66 @@ elseif($data=="qu"){
 		mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Часто задаваемые вопросы:
+               'text'=>"ℹ️ Kop beriladigam savollar:
+      
+❓Buyurtmani qancha muddat ichida to'ldirasiz?
+❗Bot foydalanuvchilari qanchalik kõp bõlsa shunchalik buyurtma tõldirilishi tezlashadi  shu tufayli buyurtma qanchada tõldirilishiga aniq muddat qõya olmaymiz! Chunki bu foydalanuvchilar Aktiv Uzbek bõladi!
 
-ℹ️ Kop beriladigam savollar:
+❓Tanga qande sotib olsam boladi?
+❗Agar tanga sotib olmoqchi bolsangiz admin bilan boglaning
 
-❓Buyurtmani qancha muddat ichida toldirasiz?
-❗️Bot foydalanuvchilari qanchalik kõp bõlsa shunchalik buyurtma tõldirilishi tezlashadi  shu tufayli buyurtma qanchada tõldirilishiga aniq muddat qõya olmaymiz! Chunki bu foydalanuvchilar Aktiv Uzbek va Real foydalanuvchi bõladi!
-
-❓Tanga qanday sotib olsam boladi?
-❗️Agar tanga sotib olmoqchi bolsangiz admin bilan boglaning
-
-❓Tangamni kimgadir topshirsam boladimi?
-❗️Xa, Faqat u odamni sozini  Forward qilib yoki ID raqam orqali amalga oshirilishi mumkin
-2tadan kop akkaunt ochgan foydalanuvchi bloklanadi!",
+❓Tangamni kimgadir topshirsam bo'ladimi?
+❗Xa, Faqat u odamni sozini  Forward qilib yoki ID raqam orqali amalga oshirilishi mumkin",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Qoidalar",'callback_data'=>'rules'],['text'=>"Tangalar va Obunachilar",'callback_data'=>'coinandmember']
+['text'=>"📍Qonunlar Shartlar",'callback_data'=>'rules'],['text'=>"📍Pul qutisi + Ro`yhatadan o`tish",'callback_data'=>'coinandmember']
 				   ],
 				   				   				   [
-['text'=>"Kop beriladigan savollar!",'callback_data'=>'qu'],['text'=>"Nega admin beramiz",'callback_data'=>'whyadmin']
+['text'=>"📍Umumiy savollar",'callback_data'=>'qu'],['text'=>"📍Administratsiya qilish",'callback_data'=>'whyadmin']
 				   ],
 				   			   				   				   [
-['text'=>"Bot haqida",'callback_data'=>'about'],['text'=>"Botdan foydalanish",'callback_data'=>'howuser']
+['text'=>"📍Bot haqida",'callback_data'=>'about'],['text'=>"📍Ishlatish qo`llanmasi",'callback_data'=>'howuser']
 				   ],
 				   			   				   				   [
-['text'=>"Qanday botni admin qilamiz",'callback_data'=>'howadmin']
+['text'=>"📍Bot boshqaruvchi",'callback_data'=>'howadmin']
 				   ],
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
-			   ]);
+			   ]);	
 }
 elseif($data=="whyadmin"){
 		mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"ℹ️❓Nimaga botni adminlar qatorig ornatish kerak?
-               
-📍 Sizning kanalingizdagi boshqaruvchingiz kanali azolaringiz royxatini korish va tanga olishni yoki tanga pasayishini hisoblash uchun administrator bolishi kerak. Buni kanalingizga hech qanday ziyon tomoni yo'q!!!
+               'text'=>"ℹ️❓Nimaga bot adminlar qatoriga o'rnatish kerak?
+      
+📍 Sizning kanalingizdagi boshqaruvchingiz kanali a'zolaringiz ro'yxatini ko'rish va tanga olishni yoki tanga pasayishini hisoblash uchun administrator bo'lishi kerak.
 
-❗️Agar siz botni olib tashlasangiz, buyurtmani bot bekor qiladi va hisobingiz bloklanadi",
+❗Agar siz botni olib tashlasangiz, buyurtmani bot bekor qiladi va hisobingiz bloklanadi",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Qoidalar",'callback_data'=>'rules'],['text'=>"Tangalar va Obunachilar",'callback_data'=>'coinandmember']
+['text'=>"📍Qonunlar Shartlar",'callback_data'=>'rules'],['text'=>"📍Pul qutisi + Ro`yhatadan o`tish",'callback_data'=>'coinandmember']
 				   ],
 				   				   				   [
-['text'=>"Kop beriladigan savollar!",'callback_data'=>'qu'],['text'=>"Nega admin beramiz",'callback_data'=>'whyadmin']
+['text'=>"📍Umumiy savollar",'callback_data'=>'qu'],['text'=>"📍Administratsiya qilish",'callback_data'=>'whyadmin']
 				   ],
 				   			   				   				   [
-['text'=>"Bot haqida",'callback_data'=>'about'],['text'=>"Botdan foydalanish",'callback_data'=>'howuser']
+['text'=>"📍Bot haqida",'callback_data'=>'about'],['text'=>"📍Ishlatish qo`llanmasi",'callback_data'=>'howuser']
 				   ],
 				   			   				   				   [
-['text'=>"Qanday botni admin qilamiz",'callback_data'=>'howadmin']
+['text'=>"📍Bot boshqaruvchi",'callback_data'=>'howadmin']
 				   ],
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
-			   ]);
+			   ]);	
 }
 elseif($data=="howadmin"){
 		mahdi('editmessagetext',[
@@ -1699,89 +1727,106 @@ elseif($data=="howadmin"){
 1️⃣ Birinchi Kanal Sozlamalarini bosing
 2️⃣ Keyin adminstrators qatorini bosing
 3️⃣ Keyin adminstrators qõshish belgisini bosing!
-4️⃣ Keyin qidiruvni bosing bot manzilini kiriting [@xojakamizbot]
-5️⃣ Keyin botimiz chiqadi ustiga bosing hammasiga ruxsat berib  VIP Adminstrator qiling
+4️⃣ Keyin qidiruvni bosing bot manzilini kiriting [@WMeMBot]
+5️⃣ Keyin botimiz chiqadi ustiga bosing hammasiga ruxsat berib Adminstrator qiling
+📍 Axborotlashtirish va telekommunikatsiya texnologiyalari davlat ro'yxatiga Bot nomi joylashgan ekanligini ko'rasiz 
 
-@Aqili_botlar Kanallar uchun foydali loyiha🤟",
+@$channel Kanallar uchun foydali loyiha🤟",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
- ['text'=>"Qoidalar",'callback_data'=>'rules'],['text'=>"Tangalar va Obunachilar",'callback_data'=>'coinandmember']
+['text'=>"📍Qonunlar Shartlar",'callback_data'=>'rules'],['text'=>"📍Pul qutisi + Ro`yhatadan o`tish",'callback_data'=>'coinandmember']
 				   ],
 				   				   				   [
-['text'=>"Kop beriladigan savollar!",'callback_data'=>'qu'],['text'=>"Nega admin beramiz",'callback_data'=>'whyadmin']
+['text'=>"📍Umumiy savollar",'callback_data'=>'qu'],['text'=>"📍Administratsiya qilish",'callback_data'=>'whyadmin']
 				   ],
 				   			   				   				   [
-['text'=>"Bot haqida",'callback_data'=>'about'],['text'=>"Botdan foydalanish",'callback_data'=>'howuser']
+['text'=>"📍Bot haqida",'callback_data'=>'about'],['text'=>"📍Ishlatish qo`llanmasi",'callback_data'=>'howuser']
 				   ],
 				   			   				   				   [
-['text'=>"Qanday botni admin qilamiz",'callback_data'=>'howadmin']
+['text'=>"📍Bot boshqaruvchi",'callback_data'=>'howadmin']
 				   ],
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
-			   ]);
+			   ]);	
 }
 elseif($data=="about"){
 		mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Bu bot sizning kanalingizga 100% Ozbek obunachilarni taqdim etadi!",
+               'text'=>"ℹ️ Ushbu robotdan qanday foydalanishni bilib oling:
+      
+1 tanga oling
+Tangalarni to'plash uchun asosiy robot menyusidagi Tanga yigish tugmasidan foydalaning.Har bir kanaldan keyin robotga qaytib, tanga tugmasidan foydalaning.
+Agar muammo yuzaga kelsa va an'anaviy bo'lmagan kanal yoki kanallar obuna bo'lsa va tanga olmasangiz, hisobot tugmasini bosing va keyingi tugmani bosing.
+
+Ro'yxatdan bo'lish 2️⃣
+Tangani qabul qilib taqsimlangandan so'ng, sizning kanalingizga a'zo bo'lish vaqti keldi. Sizning a'zoligingizni qabul qilish uchun kamida 10 ta tanga bo'lishi kerak.
+ Buyurtma qilingan kanaldagi robot to'g'ri ishlashi uchun administrator bo'lishi kerak, agar robot o'chirilsa, buyurtma bekor qilinadi.
+📍 Buyurtma beriladigan kanal umumiy kanal bo'lishi kerak
+
+3-bo'lim
+📍 Do'stlaringizni robotga o'zlarining maxsus havolalari bilan taklif qilish orqali pullarni olishingiz mumkin
+Siz taklif qilayotganlar tomonidan pul sotib olsangiz, 20% sizga Porsche-ni sotib olingan miqdorda beradi.
+
+4- Pulning nomi:
+Agar siz robotga kiritadigan birinchi shaxs bo'lsangiz, tanga kodi qiymatini olishingiz mumkin bo'lgan koddir.
+📍 Pul kodi @$channel kanalida joylashtirilgan va har bir tanga kodining qiymati administrator tomonidan o'rnatiladi",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Qoidalar",'callback_data'=>'rules'],['text'=>"Tangalar va Obunachilar",'callback_data'=>'coinandmember']
+['text'=>"📍Qonunlar Shartlar",'callback_data'=>'rules'],['text'=>"📍Pul qutisi + Ro`yhatadan o`tish",'callback_data'=>'coinandmember']
 				   ],
 				   				   				   [
-['text'=>"Kop beriladigan savollar!",'callback_data'=>'qu'],['text'=>"Nega admin beramiz",'callback_data'=>'whyadmin']
+['text'=>"📍Umumiy savollar",'callback_data'=>'qu'],['text'=>"📍Administratsiya qilish",'callback_data'=>'whyadmin']
 				   ],
 				   			   				   				   [
-['text'=>"Bot haqida",'callback_data'=>'about'],['text'=>"Botdan foydalanish",'callback_data'=>'howuser']
+['text'=>"📍Bot haqida",'callback_data'=>'about'],['text'=>"📍Ishlatish qo`llanmasi",'callback_data'=>'howuser']
 				   ],
 				   			   				   				   [
-['text'=>"Qanday botni admin qilamiz",'callback_data'=>'howadmin']
+['text'=>"📍Bot boshqaruvchi",'callback_data'=>'howadmin']
+				   ],
+				   [
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
-			   ]);
+			   ]);	
 }
 elseif($data=="howuser"){
 		mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Ushbu botdan qanday foydalanishni bilib oling:
+               'text'=>"Botning buyruq va shartlari:
+      
+1⃣Agar siz robotga noma'qul bir kanalni ro'yxatdan o'tkazsangiz, sizning buyurtmangiz ham robot tomonidan bloklanadi
 
-1-Tanga olish
-Tangalarni toplash uchun asosiy bot menyusidagi Tanga ishlash tugmasidan foydalaning. Har bir kanaldan keyin botga qaytib, Tekshirish tugmasidan foydalaning.
-Agar muammo yuzaga kelsa va ananaviy bolmagan kanal yoki kanallar obuna bolsa va tanga olmasangiz, hisobot tugmasini bosing va keyingi tugmani bosing.
+2⃣Agar siz bir necha marta xabar yuborib, robotga spam yuborsangiz robotdan blokirovka qilinadi
 
-2-Royxatdan otqizish
-Tangani qabul qilib taqsimlangandan song, sizning kanalingizga azolarni buyurtma qilish vaqti keladi. Sizning azoligingizni qabul qilish uchun kamida 10 ta tanga bolishi kerak.
- Buyurtma qilingan kanaldagi bot togri ishlashi uchun administrator bolishi kerak, agar bot ochirilsa, buyurtma bekor qilinadi.
-📍 Buyurtma beriladigan kanal umumiy kanal b'lishi kerak
+3⃣ Buyurtmani bajarish uchun  + bolishiga bot javobgar emas.
 
-3-Referal
-📍 Dostlaringizni botga o'zlaringizning maxsus havolalaring bilan taklif qilish orqali tangalarni olishingiz mumkin
-Siz taklif qilgan dostlaringiz tomonidan tanga sotib olinsa, 20% sizga tanga sotib olingan miqdorda beradi.
+4⃣ Agar tanga noto'g'ri uzatilgan bo'lsa, qo'llab-quvvatlash hech qanday javobgarlikni o'z zimmasiga olmaydi, shuning uchun tanga ko'chirishda ehtiyot bo'ling.
 
-4-Bepul tangalar:
-Agar siz botga kiritadigan birinchi shaxs bolsangiz, tanga kodi qiymatini olishingiz mumkin boladi.
-📍Tanga kodi @Ref_tv kanalida joylashtirilgan va har bir tanga kodining qiymati administrator tomonidan ornatiladi",
+5⃣ Ulangan tangalar to'liq avtomatlashtirilsa, biron bir muammoga duch kelsangiz yordamga murojaat qiling! ",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   				   [
-['text'=>"Qoidalar",'callback_data'=>'rules'],['text'=>"Tangalar va Obunachilar",'callback_data'=>'coinandmember']
+['text'=>"📍Qonunlar Shartlar",'callback_data'=>'rules'],['text'=>"📍Pul qutisi + Ro`yhatadan o`tish",'callback_data'=>'coinandmember']
 				   ],
 				   				   				   [
-['text'=>"Kop beriladigan savollar!",'callback_data'=>'qu'],['text'=>"Nega admin beramiz",'callback_data'=>'whyadmin']
+['text'=>"📍Umumiy savollar",'callback_data'=>'qu'],['text'=>"📍Administratsiya qilish",'callback_data'=>'whyadmin']
 				   ],
 				   			   				   				   [
-['text'=>"Bot haqida",'callback_data'=>'about'],['text'=>"Botdan foydalanish",'callback_data'=>'howuser']
+['text'=>"📍Bot haqida",'callback_data'=>'about'],['text'=>"📍Ishlatish qo`llanmasi",'callback_data'=>'howuser']
 				   ],
 				   			   				   				   [
-['text'=>"Qanday botni admin qilamiz",'callback_data'=>'howadmin']
+['text'=>"📍Bot boshqaruvchi",'callback_data'=>'howadmin']
+				   ],
+				   [
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1791,17 +1836,17 @@ elseif($data=="code"){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Maxsus kod yani Bepul tanga bolimiga xush kelibsiz!
+               'text'=>"🎖 Xazina kodi bo'limiga xush kelibsiz
 
-Menga @$channelcode  kanaliga yuborilga maxsus kodni yuboring1
+@$channelcode yuborilgan tanga kodini yuboring
 
-📌 Agar siz birinchi bolib menga kodni yuborsangiz bepul tangalar olasiz!
+Pullar kodini to'ldirish va o'chirish yoki biron narsa qo'shmasdan yuborishingiz mumkin
 
-📣 Barcha malumotlar: Qoidalar bolimida!",
+ Qo'llanmada tanga kodi haqida qo'shimcha ma'lumotni ko'ring",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel'],['text'=>"🚦 Qoidalar",'callback_data'=>'help']
+['text'=>"🔙 Bosh memyu",'callback_data'=>'panel'],['text'=>"📝Qoidalar",'callback_data'=>'help']
 				   ],
                      ]
                ])
@@ -1816,25 +1861,29 @@ if ($textmassage == $code) {
 $coincode = $user["howcoincode"];
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Tabriklayman!
+        	'text'=>"🎉 Muborak bo'lsin qadrdonim🎉
 
-Siz $coincode tanga yutib oldingiz!",
+💰Siz 1-bõlib kodni yubordingiz va  $coincode tanga yutib oldingiz!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh Menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
  ]);
           mahdi('sendmessage',[
         	'chat_id'=>"@$channelcode",
-        	'text'=>"😎 Maxsus kod ishlatildi!
+        	'text'=>"😎Maxsus Kod ishlatildi
 
-✅Nick :  $first_name             ᅠ
-✅ID : $from_id
+📍 Va bu koddan qayta foydalanish mumkin emas 
 
-Bot: @$usernamebot",
+🎖 1-Foydalangan g'olib:
+
+📌Nick : $first_name
+📌ID : $from_id
+📌Username : $username
+🤖  Bot : @$usernamebot",
  ]);
 unset($user["codecoin"]);
 unset($user["howcoincode"]);
@@ -1845,7 +1894,7 @@ $coinplus = $coin + $coincode;
 $juser["userfild"]["$from_id"]["coin"]="$coinplus";
 $juser["userfild"]["$fromid"]["file"]="none";
 $juser = json_encode($juser,true);
-file_put_contents("data/$from_id.json",$juser);
+file_put_contents("data/$from_id.json",$juser);	
 }
 else
 {
@@ -1853,11 +1902,11 @@ else
         	'chat_id'=>$chat_id,
         	'text'=>"😔Kod notog`ri yoki uni sizdan oldin ishlatib bõlishgan!
 
-📌 @Ref_tv kanalini doimo kuzatib boring va 1-bõlib kodni yuboring va Tangani oling.",
+📌 @$channelcode kanalini doimo kuzatib boring va 1-bõlib kodni yuboring va Tangani oling!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh Menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1868,11 +1917,13 @@ elseif($data=="sup"){
 mahdi('editmessagetext',[
                 'chat_id'=>$chatid,
      'message_id'=>$messageid,
-               'text'=>"Savollar bolsa yozib qoldiring biz javob berishga xarakat qilamiz!",
+               'text'=>"🎖 Adminga yozish bõlimizga xush kelibsiz!
+               
+               Xabaringizni yozing men Adminga yuboraman!",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh Menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1884,11 +1935,11 @@ file_put_contents("data/$fromid.json",$cuser);
 elseif ($juser["userfild"]["$from_id"]["file"] == 'sendsup') {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Xabar yuborildi javobni kuting1",
+        	'text'=>"📍Xabaringiz Adminga Yuborildi",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙 Bosh Menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1902,11 +1953,11 @@ mahdi('ForwardMessage',[
 	elseif($update->message && $update->message->reply_to_message && in_array($from_id,$Dev) && $tc == "private"){
 	mahdi('sendmessage',[
         "chat_id"=>$chat_id,
-        "text"=>"Sizning xabaringiz foydalanuvchiga yuborildi;"
+        "text"=>"Sizning xabar yuborildi"
 		]);
 	mahdi('sendmessage',[
         "chat_id"=>$reply,
-        "text"=>" Sizga admin tomonifan javob keldi:
+        "text"=>" 👤 Bu siz uchun zaxira
 
 `$textmassage`",
 'parse_mode'=>'MarkDown'
@@ -1918,18 +1969,18 @@ $inviter = $cuser["userfild"]["$fromid"]["inviter"];
 $invitercoin = $pluscoin / 100 * 20;
 	       mahdi('answercallbackquery', [
             'callback_query_id' =>$membercall,
-            'text' => "Добавление купленных монет ...",
+            'text' => "📍 Tangalar sotib qõshib bor ...",
             'show_alert' =>false
         ]);
 		         mahdi('sendmessage',[
         	'chat_id'=>$inviter,
-        	'text'=>"Количество: $invitercoin монет
+        	'text'=>"💰 Soni : $invitercoin tangalar
 
- Ваши монеты были добавлены к вашим монетам в качестве ресурса покупки",
+📍 Sifatida komissiyasi sotib olish sizdan qo'shilgan edi tangalar uchun",
                'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Назад",'callback_data'=>'panel']
+['text'=>"🔙 Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -1950,32 +2001,32 @@ unlink("data/$fromid.txt");
 }
 //==============================================================
 //panel admin
-elseif($textmassage=="/panel" or $textmassage=="panel" or $textmassage=="Admin"){
+elseif($textmassage=="/panel" or $textmassage=="panel" or $textmassage=="flils"){
 if ($tc == "private") {
 if (in_array($from_id,$Dev)){
 mahdi('sendmessage',[
 'chat_id'=>$chat_id,
-'text'=>"Xush kelibsiz janob admin!",
+'text'=>"salom Admin bõlimiga xush kelibsiz",
          'reply_to_message_id'=>$message_id,
 	  'reply_markup'=>json_encode([
     'keyboard'=>[
 	  	  	 [
-		['text'=>"Statistika"],['text'=>"Bloklash"]
-     ],
-   [
-      ['text'=>"Xabar yuborish"],['text'=>"Forward"]
-    ],
-       [
-['text'=>"Buyurtmalar"],['text'=>"Buyurtmani ochirish"]
-    ],
-           [
-['text'=>"Tanga qoshish"],['text'=>"Tanga ushlab qolish"]
-    ],
-               [
-['text'=>"Maxsus kod"],['text'=>"Barchaga tanga yuborish"]
-    ],
-                       [
-['text'=>"Qoshimcha"]
+		['text'=>"📍Stat"],['text'=>"📍Qora rõyhat"]                  
+		 ],
+ 	[
+	  	['text'=>"📍Send"],['text'=>"📍For Send"]
+	  ],
+	   	[
+['text'=>"📍List kanal"],['text'=>"📍Del kanal"]
+	  ],
+	  	   	[
+['text'=>"📍Tanga qõshish"],['text'=>"📍Tanga ayrish"]
+	  ],
+	  	  	   	[
+['text'=>"📍Maxsus Kod"],['text'=>"📍Tanga tarqat"]
+	  ],
+	  	  	  	  	   	[
+['text'=>"📍Del Block"]
 	  ]
    ],
       'resize_keyboard'=>true
@@ -1984,32 +2035,32 @@ mahdi('sendmessage',[
 }
 }
 }
-elseif($textmassage=="Menyu 🔙"){
+elseif($textmassage=="🔙 Orqaga"){
 if ($tc == "private") {
 if (in_array($from_id,$Dev)){
 mahdi('sendmessage',[
 'chat_id'=>$chat_id,
-'text'=>"Menyudamiz:",
+'text'=>"Assalomu alaykum @GOLD_STARUZ  Asosiy bõlimga qaydingiz",
          'reply_to_message_id'=>$message_id,
 	  'reply_markup'=>json_encode([
     'keyboard'=>[
 	  	  	 [
-		['text'=>"Statistika"],['text'=>"Bloklash"]
-     ],
-   [
-      ['text'=>"Xabar yuborish"],['text'=>"Forward"]
-    ],
-       [
-['text'=>"Buyurtmalar"],['text'=>"Buyurtmani ochirish"]
-    ],
-           [
-['text'=>"Tanga qoshish"],['text'=>"Tanga ushlab qolish"]
-    ],
-               [
-['text'=>"Maxsus kod"],['text'=>"Barchaga tanga yuborish"]
-    ],
-                       [
-['text'=>"Qoshimcha"]
+		['text'=>"📍Stat"],['text'=>"📍Qora rõyhat"]                  
+		 ],
+ 	[
+	  	['text'=>"📍Send"],['text'=>"📍For Send"]
+	  ],
+	   	[
+['text'=>"📍List kanal"],['text'=>"📍Del kanal"]
+	  ],
+	  	   	[
+['text'=>"📍Tanga qõshish"],['text'=>"📍Tanga ayrish"]
+	  ],
+	  	  	   	[
+['text'=>"📍Maxsus Kod"],['text'=>"📍Tanga tarqat"]
+	  ],
+	  	  	  	   	[
+['text'=>"📍Del Block"]
 	  ]
    ],
       'resize_keyboard'=>true
@@ -2021,30 +2072,30 @@ file_put_contents("data/$from_id.json",$juser);
 }
 }
 }
-elseif($textmassage=="Statistika"){
+elseif($textmassage=="📍Stat"){
 if (in_array($from_id,$Dev)){
 $all = count($user["userlist"]);
 $order = count($user["channellist"]);
 				mahdi('sendmessage',[
 		'chat_id'=>$chat_id,
-		'text'=>"Botning statistikasi:
+		'text'=>"🤖 Statistika: 
+		
+📌Hamma userlar $all ta
 
- Foydalanuvchilar soni: $all
-
- Buyurtmalar soni: $order ",
+📌Hamma kanallar: $order ta",
                 'hide_keyboard'=>true,
 		]);
 		}
 }
-elseif($textmassage=="Bloklash"){
+elseif($textmassage=="📍Qora rõyhat"){
 if (in_array($from_id,$Dev)){
 				mahdi('sendmessage',[
 		'chat_id'=>$chat_id,
-		'text'=>"Bloklanadigan foydalanuvchi ID raqamini yuboring;",
+		'text'=>"Qora rõyhatga qõshiladigon foydalanuvchi xabarini forward qilib yuboring",
    'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2056,14 +2107,16 @@ file_put_contents("data/$from_id.json",$juser);
 		}
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'block') {
-if ($textmassage != "Назад 🔙") {
+if ($textmassage != "🔙 Orqaga") {
 if ($forward_from == true) {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Foydalanuvchi bloklandi;
+        	'text'=>"Qabul qilindi✔️
 
-Malumot: $forward_from_id
-Username: @$forward_from_username",
+🔹 ID raqami: $forward_from_id
+🔸 Usernamesi: @$forward_from_username
+
+📍Endi botdan foydalana olmaydi!",
 	  'reply_to_message_id'=>$message_id,
  ]);
 $juser["blocklist"][]="$forward_from_id";
@@ -2075,9 +2128,9 @@ else
 {
 	         mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Bloklandi!;
+        	'text'=>"U muvaffaqiyat bilan  bloklandi✅
 
-Malumot: $textmassage",
+🔹ID : $textmassage",
 	  'reply_to_message_id'=>$message_id,
  ]);
 $juser["blocklist"][]="$textmassage";
@@ -2087,16 +2140,16 @@ file_put_contents("data/$from_id.json",$juser);
 }
 }
 }
-elseif ($textmassage == 'Xabar yuborish' ) {
+elseif ($textmassage == '📍Send' ) {
 if (in_array($from_id,$Dev)){
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Matn yuboring!;",
+        	'text'=>"Xabar matnini kiriting😉",
 	  'reply_to_message_id'=>$message_id,
 	   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2112,10 +2165,10 @@ $juser["userfild"]["$from_id"]["file"]="none";
 $numbers = $user["userlist"];
 $juser = json_encode($juser,true);
 file_put_contents("data/$from_id.json",$juser);	
-if ($textmassage != "Назад 🔙") {
+if ($textmassage != "🔙 Orqaga") {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Barchaga yuborildi;",
+        	'text'=>"Xabar hammaga yuborildi✔️",
 	  'reply_to_message_id'=>$message_id,
  ]);
 for($z = 0;$z <= count($numbers)-1;$z++){
@@ -2126,16 +2179,16 @@ for($z = 0;$z <= count($numbers)-1;$z++){
 }
 }
 }
-elseif ($textmassage == 'Forward' ) {
+elseif ($textmassage == '📍For Send' ) {
 if (in_array($from_id,$Dev)){
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Menga forward qiling;",
+        	'text'=>"Xabarni yuboring! Men uni Forward xabar qilib hammaga yuboraman",
 	  'reply_to_message_id'=>$message_id,
 	   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2151,10 +2204,10 @@ $juser["userfild"]["$from_id"]["file"]="none";
 $numbers = $user["userlist"];
 $juser = json_encode($juser,true);
 file_put_contents("data/$from_id.json",$juser);		
-if ($textmassage != "Назад 🔙") {
+if ($textmassage != "🔙 Orqaga") {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Forward yuborildi;",
+        	'text'=>"Forward xabar hammaga yuborildi✔",
 	  'reply_to_message_id'=>$message_id,
  ]);
 for($z = 0;$z <= count($numbers)-1;$z++){
@@ -2162,7 +2215,7 @@ Forward($numbers[$z], $chat_id,$message_id);
 }
 }
 }
-elseif($textmassage=="Buyurtmalar"){
+elseif($textmassage=="📍List kanal"){
 if (in_array($from_id,$Dev)){
 $order = $user["channellist"];
 $ordercount = count($user["channellist"]);
@@ -2171,24 +2224,24 @@ $result = $result.$order[$z]."\n";
 }
 				mahdi('sendmessage',[
 		'chat_id'=>$chat_id,
-		'text'=>"Buyurtmalar soni: $ordercount
-
-📌 Buyurtmalar:
+		'text'=>"📍Botga hozir $ordercount ta kanal odam qõshish uchun zakaz bergan
+		
+Kanallar Username lari
 $result",
                 'hide_keyboard'=>true,
 		]);
 		}
 }
-elseif($textmassage=="Buyurtmani ochirish"){
+elseif($textmassage=="📍Del kanal"){
 if (in_array($from_id,$Dev)){
 				mahdi('sendmessage',[
 		'chat_id'=>$chat_id,
-		'text'=>"Ochirmoxchi bolgan kanal userini menga yuboring:
-Masalan: @$channel",
+		'text'=>"📍 Õchiriladigon Kanal username sini yuboring 
+Namuna : @$channel",
   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2200,10 +2253,10 @@ file_put_contents("data/$from_id.json",$juser);
 		}
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'remorder') {
-if ($textmassage != "Menyu 🔙") {
+if ($textmassage != "🔙 Orqaga") {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Buyurtma ochirildi",
+        	'text'=>"Bõldi bu kanal õchirildi✅",
 	  'reply_to_message_id'=>$message_id,
  ]);
 $how = array_search($textmassage,$user["channellist"]);
@@ -2218,15 +2271,15 @@ $juser = json_encode($juser,true);
 file_put_contents("data/$from_id.json",$juser);		
 }
 }
-elseif($textmassage=="Tanga qoshish"){
+elseif($textmassage=="📍Tanga qõshish"){
 if (in_array($from_id,$Dev)){
 				mahdi('sendmessage',[
 		'chat_id'=>$chat_id,
-		'text'=>"Menga foydalanuvchi ID sini yuboring;",
+		'text'=>"Tanga qõshiladigon foydalanuvchi xabarini forward qilib yuboring🚀",
   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2238,21 +2291,21 @@ file_put_contents("data/$from_id.json",$juser);
 		}
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'adminsendcoin') {
-if ($textmassage != "Назад 🔙") {
+if ($textmassage != "🔙 Orqaga") {
 if ($forward_from == true) {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Foydalanuvchi topildi!;
+        	'text'=>"Qabul qilindi✔️
 
-ID: $forward_from_id
-USERNAME: @$forward_from_username
+🔹 ID raqami: $forward_from_id
+🔸 Usernamesi: @$forward_from_username
 
-📍Yuboriladigan tangalar sonini menga yuboring!",
+✅Endi tanga sonini yuboring!",
 	  'reply_to_message_id'=>$message_id,
 	   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2267,14 +2320,13 @@ else
 {
 	         mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Yuboriladigan tangalar sonini kiriting
-
-Tangalar soni: $textmassage",
+        	'text'=>"📍Qabul qilindi
+🔹Ushbu foydalanuvchiga $textmassage tanga qõshildi",
 	  'reply_to_message_id'=>$message_id,
 	   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2288,20 +2340,20 @@ file_put_contents("data/$from_id.json",$juser);
 }
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'sethowsendcoin') {
-if ($textmassage != "Назад 🔙") {
+if ($textmassage != "🔙 Orqaga") {
 $id = $juser["idforsend"];
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"$textmassage tanga $id ga yetkazildi",
+        	'text'=>"📍Tanga soni $textmassage tanga!  ID raqami $id",
 	  'reply_to_message_id'=>$message_id,
  ]);
           mahdi('sendmessage',[
         	'chat_id'=>$id,
-        	'text'=>"$textmassage tangani adminlar sizga yuborishti!",
+        	'text'=>"📍 Sizga Admin tomonidan $textmassage tanga qõshildi",
 			               'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -2314,15 +2366,15 @@ $inuser = json_encode($inuser,true);
 file_put_contents("data/$id.json",$inuser);
 }
 }
-elseif($textmassage=="Tanga ushlab qolish"){
+elseif($textmassage=="📍Tanga ayrish"){
 if (in_array($from_id,$Dev)){
 				mahdi('sendmessage',[
 		'chat_id'=>$chat_id,
-		'text'=>"Menga foydalanuvchi ID sini yuboring;",
+		'text'=>"Tanga ayriladigon foydalanuvchini xabarini menga forward qilib yuboring🚀",
   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2334,21 +2386,21 @@ file_put_contents("data/$from_id.json",$juser);
 		}
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'adminsendcoin2') {
-if ($textmassage != "Назад 🔙") {
+if ($textmassage != "🔙 Orqaga") {
 if ($forward_from == true) {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Foydalanuvchi topildi!;
+        	'text'=>"Qabul qilindi✔️
 
-ID: $forward_from_id
-USERNAME: @$forward_from_username
+🔹 ID raqami: $forward_from_id
+🔸 Usernamesi: @$forward_from_username
 
-Ushlab qolinadigan tangalar sonini menga yuboring",
+📍Endi tanga sonini yuboring!",
 	  'reply_to_message_id'=>$message_id,
 	   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2363,14 +2415,13 @@ else
 {
 	         mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Ushlab qolinadigan tangalar sonini kiriting
-
-Tangalar soni: $textmassage",
+        	'text'=>"📍 Qabul qilindi
+🔹Ushbu foydalanuvchidan $textmassage tanga ayrildi",
 	  'reply_to_message_id'=>$message_id,
 	   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2384,20 +2435,20 @@ file_put_contents("data/$from_id.json",$juser);
 }
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'sethowsendcoin2') {
-if ($textmassage != "Menyu 🔙") {
+if ($textmassage != "🔙 Orqaga") {
 $id = $juser["idforsend"];
          mahdiphp('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"$textmassage tanga $id dan ushlab qolindi",
+        	'text'=>"📍Tanga soni $textmassage tanga!  ID raqami $id ",
 	  'reply_to_message_id'=>$message_id,
  ]);
           mahdi('sendmessage',[
         	'chat_id'=>$id,
-        	'text'=>"$textmassage sizdan ushlab qolindi.",
+        	'text'=>"📍 Sizdan Admin tomonidan $textmassage tanga olib tashlandi",
 			               'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -2410,16 +2461,16 @@ $inuser = json_encode($inuser,true);
 file_put_contents("data/$id.json",$inuser);
 }
 }
-elseif($textmassage=="КодМонеты"){
+elseif($textmassage=="📍Maxsus Kod"){
 if (in_array($from_id,$Dev)){
 				mahdi('sendmessage',[
 		'chat_id'=>$chat_id,
-		'text'=>"     Maxsus kodni kiriting1
-Kod [@$channelcode] ga yuboriladi",
+		'text'=>"Maxsus kodni kiriting! Maxsus kod Harf Yoki Raqam bõlishi mumkin!🚀
+Maxsus kod [@$channelcode] kanalida elon qilinadi! ",
   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2431,10 +2482,10 @@ file_put_contents("data/$from_id.json",$juser);
 		}
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'setcodecoin') {
-if ($textmassage != "Назад 🔙") {
+if ($textmassage != "🔙 Orqaga") {
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Nechi tanga oynamoxchisiz?",
+        	'text'=>"📍 Maxsus kod yaratildi endi tanga sonini kiriring!",
 	  'reply_to_message_id'=>$message_id,
  ]);
 $user["codecoin"]="$textmassage";
@@ -2446,24 +2497,24 @@ file_put_contents("data/$from_id.json",$juser);
 }
 }
 elseif ($juser["userfild"]["$from_id"]["file"] == 'howcodecoin') {
-if ($textmassage != "Назад 🔙") {
+if ($textmassage != "🔙 Orqaga") {
 $code = $user["codecoin"];
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"📍Maxsus kod @$channelcode ga yuborildi!!",
+        	'text'=>"📍 Maxsus kod @$channelcode ga yuborildi",
 	  'reply_to_message_id'=>$message_id,
  ]);
           mahdi('sendmessage',[
         	'chat_id'=>"@$channelcode",
-        	'text'=>"🎉Siz uchun MAXSUS KOD!🎉
-🔆 Kod homiysi @ReferalNo_1   ⤵️
+        	'text'=>"🎉 Do'stlarim maxsus kod yaratildi!🎉
+🔆 Kodni oling va shoshiling⤵️
 
-👑 Kod: $code
+👑Masus kod: $code
 
-💰Tangalar soni: $textmassage
+💰  Tanga miqdori $textmassage tanga
 
 
-🤖 Kodni botga yuboring!👉: @$usernamebot",
+🤖 Botga kirish👉: @$usernamebot",
  ]);
 $user["howcoincode"]="$textmassage";
 $user = json_encode($user,true);
@@ -2473,16 +2524,16 @@ $juser = json_encode($juser,true);
 file_put_contents("data/$from_id.json",$juser);	
 }
 }
-elseif ($textmassage == 'Barchaga tanga yuborish' ) {
+elseif ($textmassage == '📍Tanga tarqat' ) {
 if (in_array($from_id,$Dev)){
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Nechi tanga yubormoxchisiz?",
+        	'text'=>"Tanga sonini kiriting! Hammaga tarqatiladi🚀",
 	  'reply_to_message_id'=>$message_id,
 	   'reply_markup'=>json_encode([
     'keyboard'=>[
 	[
-	['text'=>"Menyu 🔙"]
+	['text'=>"🔙 Orqaga"] 
 	]
    ],
       'resize_keyboard'=>true
@@ -2493,27 +2544,27 @@ $juser = json_encode($juser,true);
 file_put_contents("data/$from_id.json",$juser);		
 }
 }
-elseif ($juser["userfild"]["$from__id"]["file"] == 'sendcointoall') {
+elseif ($juser["userfild"]["$from_id"]["file"] == 'sendcointoall') {
 $juser["userfild"]["$from_id"]["file"]="none";
 $juser = json_encode($juser,true);
-file_put_contents("data/$from_id.json",$juser);
-if ($textmassage != "Menyu 🔙") {
+file_put_contents("data/$from_id.json",$juser);	
+if ($textmassage != "🔙 Orqaga") {
 $numbers = $user["userlist"];
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Umumiy tanga yuborildi",
+        	'text'=>"$textmessage tanga hammaga tarqatildi✔",
 	  'reply_to_message_id'=>$message_id,
  ]);
 for($z = 0;$z <= count($numbers)-1;$z++){
    mahdi('sendmessage',[
-          'chat_id'=>$numbers[$z],
-		  'text'=>"SAAALOOM!
+          'chat_id'=>$numbers[$z],        
+		  'text'=>"🎉 Siz uchun maxsus Sovg`a🎉
 
-💰 $textmassage tangani sizga admin yubordi!",
+💰 Sizning hisobingizga @GOLD_STARUZ tomonidan $textmassage tanga qõshildi!",
           'reply_markup'=>json_encode([
                    'inline_keyboard'=>[
 				   [
-['text'=>"🔙 Menyu",'callback_data'=>'panel']
+['text'=>"🔙Bosh menyu",'callback_data'=>'panel']
 				   ],
                      ]
                ])
@@ -2523,29 +2574,29 @@ $coin = $juser["userfild"]["$numbers[$z]"]["coin"];
 $coinplus = $coin + $textmassage;
 $juser["userfild"]["$numbers[$z]"]["coin"]="$coinplus";
 $juser = json_encode($juser,true);
-file_put_contents("data/$numbers[$z].json",$juser);
+file_put_contents("data/$numbers[$z].json",$juser);	
 }
 }
 }
-elseif($update->message->text != true){
+elseif($update->message->text != true){ 
 	mahdi('sendmessage',[
 	'chat_id'=>$chat_id,
-	'text'=>"Iltimos, faqat bot tugmalaridan foydalaning
-
-Tugmalarni korish uchun /start-ni bosing",
+	'text'=>"Bot guruhlarda ishlamaydi! Botni lichkasiga /start deb yuboring",
 	  	]);
 }
-elseif ($textmassage == 'Qoshimcha' ) {
+elseif ($textmassage == '📍Del Block' ) {
 if (in_array($from_id,$Dev)){
          mahdi('sendmessage',[
         	'chat_id'=>$chat_id,
-        	'text'=>"Men chunmadm...",
+        	'text'=>"Block ichidagi foydalanuvchilar blockdan olindi",
 	  'reply_to_message_id'=>$message_id,
  ]);
 $user = (file_get_contents("data/user.json"));
-file_put_contents("data/backup.json",$user);
+file_put_contents("data/backup.json",$user);	
 }
 }
 unlink("error_log");
+/*
 
+*/
 ?>
